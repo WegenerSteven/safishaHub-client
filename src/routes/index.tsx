@@ -24,9 +24,9 @@ function HomePage() {
   const { openRegister } = useModal()
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-blue-50 via-background to-blue-50 dark:from-blue-950/20 dark:via-background dark:to-blue-950/20 overflow-hidden">
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
@@ -38,12 +38,12 @@ function HomePage() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <p className="text-blue-600 font-semibold text-lg">Professional Car Care</p>
-                <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                <h1 className="text-5xl lg:text-6xl font-bold text-foreground leading-tight">
                   Book a Car Wash
                   <br />
                   <span className="text-blue-600">Near You</span>
                 </h1>
-                <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
+                <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
                   Professional car wash services at your fingertips. Choose from basic wash to 
                   premium detailing, all from trusted local providers.
                 </p>
@@ -123,22 +123,22 @@ function HomePage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-gray-900">Choose Your Service</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+            <h2 className="text-4xl font-bold mb-4 text-foreground">Choose Your Service</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               From quick washes to premium detailing, we have the perfect service for every need and budget.
             </p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             {/* Basic Wash */}
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Droplets className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Basic Wash</h3>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">Basic Wash</h3>
               <div className="text-4xl font-bold text-blue-600 mb-4">$15</div>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center justify-center text-gray-600">
@@ -166,16 +166,16 @@ function HomePage() {
             </div>
 
             {/* Premium Wash */}
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-blue-500 relative scale-105">
+            <div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border-2 border-blue-500 relative scale-105">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                 <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
                   Most Popular
                 </span>
               </div>
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Sparkles className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Premium Wash</h3>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">Premium Wash</h3>
               <div className="text-4xl font-bold text-blue-600 mb-4">$35</div>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center justify-center text-gray-600">
@@ -207,11 +207,11 @@ function HomePage() {
             </div>
 
             {/* Deluxe Detailing */}
-            <div className="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Crown className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mb-2">Deluxe Detailing</h3>
+              <h3 className="text-2xl font-semibold text-foreground mb-2">Deluxe Detailing</h3>
               <div className="text-4xl font-bold text-blue-600 mb-4">$65</div>
               <div className="space-y-3 mb-6">
                 <div className="flex items-center justify-center text-gray-600">
@@ -246,13 +246,13 @@ function HomePage() {
       </section>
 
       {/* Why Choose Us Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               Why Choose SafishaHub?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               We connect you with the best car wash professionals in your area,
               ensuring quality service every time.
             </p>
@@ -311,13 +311,13 @@ function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-muted/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
               What Our Customers Say
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted-foreground">
               Join thousands of satisfied customers who trust SafishaHub.
             </p>
           </div>
@@ -490,11 +490,11 @@ function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50">
+      <section className="py-20 bg-gradient-to-br from-blue-50 via-background to-blue-50 dark:from-blue-950/20 dark:via-background dark:to-blue-950/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center bg-white rounded-2xl p-8 md:p-12 shadow-lg">
-            <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
-            <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+          <div className="text-center bg-card rounded-2xl p-8 md:p-12 shadow-lg border">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">Ready to Get Started?</h2>
+            <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
               Join thousands of satisfied customers who trust SafishaHub for their car care needs. 
               Sign up today and experience the difference.
             </p>
@@ -522,7 +522,7 @@ function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
+      <footer className="bg-gray-900 dark:bg-gray-950 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
@@ -530,7 +530,7 @@ function HomePage() {
                 <Car className="h-8 w-8 text-blue-400" />
                 <span className="text-xl font-bold">SafishaHub</span>
               </div>
-              <p className="text-gray-400">
+              <p className="text-gray-400 dark:text-gray-500">
                 Professional car wash services connecting you with trusted local
                 providers. "Safisha" means "to clean" in Swahili.
               </p>

@@ -127,25 +127,25 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
     user.role === 'service_provider' ? providerNavItems : customerNavItems
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-background flex">
       {/* Mobile sidebar */}
       <div
         className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}
       >
         <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
+          className="fixed inset-0 bg-black/50"
           onClick={() => setSidebarOpen(false)}
         />
-        <div className="fixed top-0 left-0 w-64 h-full bg-white shadow-xl">
-          <div className="flex items-center justify-between p-4 border-b">
+        <div className="fixed top-0 left-0 w-64 h-full bg-card shadow-xl border-r">
+          <div className="flex items-center justify-between p-4 border-b border-border">
             <div className="flex items-center space-x-2">
               <Car className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">
+              <span className="text-xl font-bold text-foreground">
                 SafishaHub
               </span>
             </div>
             <button onClick={() => setSidebarOpen(false)}>
-              <X className="h-6 w-6 text-gray-400" />
+              <X className="h-6 w-6 text-muted-foreground" />
             </button>
           </div>
           <nav className="p-4">
@@ -198,11 +198,11 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:z-50">
-        <div className="flex flex-col flex-grow bg-white shadow-lg">
-          <div className="flex items-center justify-center p-6 border-b">
+        <div className="flex flex-col flex-grow bg-card shadow-lg border-r border-border">
+          <div className="flex items-center justify-center p-6 border-b border-border">
             <div className="flex items-center space-x-2">
               <Car className="h-8 w-8 text-blue-600" />
-              <span className="text-xl font-bold text-gray-900">
+              <span className="text-xl font-bold text-foreground">
                 SafishaHub
               </span>
             </div>

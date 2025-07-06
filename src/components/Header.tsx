@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { Car, LogOut, MapPin, Menu, Phone, User, X } from 'lucide-react'
 import { Button } from './ui/button'
 import { AuthModal } from './auth/AuthModal'
+import { ThemeToggle } from './theme/theme-toggle'
 import type {User as AuthUser} from '@/services/auth.service';
 import {  authService } from '@/services/auth.service'
 import { useModal } from '@/contexts/ModalContext'
@@ -11,7 +12,6 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [user, setUser] = useState<AuthUser | null>(null)
   const {
-    openAuth,
     openLogin,
     openRegister
   } = useModal()
@@ -40,10 +40,10 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top bar with contact info */}
-        <div className="hidden sm:flex items-center justify-between py-2 text-sm text-gray-600 border-b border-gray-100">
+        <div className="hidden sm:flex items-center justify-between py-2 text-sm text-muted-foreground border-b border-border">
           <div className="flex items-center space-x-6">
             <div className="flex items-center space-x-2">
               <Phone className="h-4 w-4" />
@@ -66,7 +66,7 @@ export default function Header() {
             <div className="flex items-center justify-center w-10 h-10 bg-blue-600 rounded-lg">
               <Car className="h-6 w-6 text-white" />
             </div>
-            <div className="font-bold text-xl text-gray-900">
+            <div className="font-bold text-xl text-foreground">
               Safisha<span className="text-blue-600">Hub</span>
             </div>
           </Link>
@@ -75,39 +75,39 @@ export default function Header() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link
               to="/"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+              className="text-foreground hover:text-blue-600 font-medium transition-colors duration-200"
             >
               Home
             </Link>
             <Link
               to="/services"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+              className="text-foreground hover:text-blue-600 font-medium transition-colors duration-200"
             >
               Services
             </Link>
             <Link
               to="/fleet"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+              className="text-foreground hover:text-blue-600 font-medium transition-colors duration-200"
             >
               Fleet Services
             </Link>
             {user && (
               <Link
                 to="/dashboard"
-                className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+                className="text-foreground hover:text-blue-600 font-medium transition-colors duration-200"
               >
                 Dashboard
               </Link>
             )}
             <Link
               to="/about"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+              className="text-foreground hover:text-blue-600 font-medium transition-colors duration-200"
             >
               About
             </Link>
             <Link
               to="/contact"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+              className="text-foreground hover:text-blue-600 font-medium transition-colors duration-200"
             >
               Contact
             </Link>
@@ -115,6 +115,7 @@ export default function Header() {
 
           {/* Auth buttons and mobile menu */}
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <div className="hidden md:flex items-center space-x-3">
               {user ? (
                 <>

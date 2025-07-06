@@ -8,6 +8,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import Header from '../components/Header'
 import { ModalProvider } from '../contexts/ModalContext'
+import { ThemeProvider } from '../components/theme/theme-provider'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
@@ -48,12 +49,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   component: () => (
     <RootDocument>
-      <ModalProvider>
-        <Header />
-        <Outlet />
-        <TanStackRouterDevtools />
-        <TanStackQueryLayout />
-      </ModalProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <ModalProvider>
+          <Header />
+          <Outlet />
+          <TanStackRouterDevtools />
+          <TanStackQueryLayout />
+        </ModalProvider>
+      </ThemeProvider>
     </RootDocument>
   ),
 })
@@ -64,7 +72,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body className="bg-background text-foreground">
         {children}
         <Scripts />
       </body>
