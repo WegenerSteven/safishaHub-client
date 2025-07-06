@@ -1,12 +1,13 @@
 import {
-  Outlet,
   HeadContent,
+  Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import Header from '../components/Header'
+import { ModalProvider } from '../contexts/ModalContext'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
@@ -29,7 +30,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'SafishaHub - Professional Car Wash Services',
+      },
+      {
+        name: 'description',
+        content:
+          'Book professional car wash services near you. From basic wash to premium detailing, SafishaHub connects you with trusted local providers.',
       },
     ],
     links: [
@@ -42,12 +48,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
   component: () => (
     <RootDocument>
-      <Header />
-
-      <Outlet />
-      <TanStackRouterDevtools />
-
-      <TanStackQueryLayout />
+      <ModalProvider>
+        <Header />
+        <Outlet />
+        <TanStackRouterDevtools />
+        <TanStackQueryLayout />
+      </ModalProvider>
     </RootDocument>
   ),
 })
