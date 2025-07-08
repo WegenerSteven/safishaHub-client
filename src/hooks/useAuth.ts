@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
-import type {LoginRequest, RegisterRequest, User} from '@/services/auth.service';
-import {
-  
-  
-  
-  authService
-} from '@/services/auth.service'
+// import { toast } from 'sonner'
+import type { LoginRequest, RegisterRequest, User } from '@/interfaces/auth/User.interface'
+import { authService } from '@/services/auth.service'
 
 interface UseAuthReturn {
   user: User | null
@@ -41,9 +37,29 @@ export function useAuth(): UseAuthReturn {
 
       const response = await authService.login(credentials)
       setUser(response.user)
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed'
+      // toast.success('Login successful!', {
+      //   description: 'Welcome back to SafishaHub!'
+      // })
+      console.log('Login successful! Welcome back to SafishaHub!')
+    } catch (err: any) {
+      let errorMessage = 'Login failed'
+      
+      // Handle specific error cases
+      if (err.response?.status === 401) {
+        errorMessage = 'Invalid email or password'
+      } else if (err.response?.status === 404) {
+        errorMessage = 'User not found. Please check your email address.'
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message
+      } else if (err.message) {
+        errorMessage = err.message
+      }
+      
       setError(errorMessage)
+      // toast.error('Login Failed', {
+      //   description: errorMessage
+      // })
+      console.error('Login Failed:', errorMessage)
       throw new Error(errorMessage)
     } finally {
       setIsLoading(false)
@@ -57,10 +73,27 @@ export function useAuth(): UseAuthReturn {
 
       const response = await authService.register(userData)
       setUser(response.user)
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Registration failed'
+      // toast.success('Registration successful!', {
+      //   description: 'Your account has been created. Welcome to SafishaHub!'
+      // })
+      console.log('Registration successful! Your account has been created. Welcome to SafishaHub!')
+    } catch (err: any) {
+      let errorMessage = 'Registration failed'
+      
+      // Handle specific error cases
+      if (err.response?.status === 409) {
+        errorMessage = 'An account with this email already exists'
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message
+      } else if (err.message) {
+        errorMessage = err.message
+      }
+      
       setError(errorMessage)
+      // toast.error('Registration Failed', {
+      //   description: errorMessage
+      // })
+      console.error('Registration Failed:', errorMessage)
       throw new Error(errorMessage)
     } finally {
       setIsLoading(false)

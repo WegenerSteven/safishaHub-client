@@ -9,6 +9,7 @@ export interface User {
     phone?: string;
     createdAt: string;
     updatedAt: string;
+    isVerified?: boolean; // Optional field for service providers
 }
 export interface LoginRequest {
     email: string;
