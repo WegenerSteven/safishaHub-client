@@ -40,9 +40,18 @@ class ApiService {
                 return response;
             },
             (error) => {
+                // Enhance error with response data
+                if (error.response) {
+                    error.response.data = error.response.data || {};
+                }
+                
                 if (error.response?.status === 401) {
                     this.clearToken();
-                    window.location.href = '/login';
+                    // Only redirect if not already on login/register page
+                    if (!window.location.pathname.includes('/login') && 
+                        !window.location.pathname.includes('/register')) {
+                        window.location.href = '/login';
+                    }
                 }
                 return Promise.reject(error);
             }

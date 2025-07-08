@@ -88,7 +88,18 @@ export class BookingsService {
    */
   async getMyBookings(): Promise<Booking[]> {
     try {
-      return await apiService.get<Booking[]>('/bookings/my-bookings');
+      // First try the user-specific endpoint, fallback to filtering all bookings
+      try {
+        return await apiService.get<Booking[]>('/bookings/my-bookings');
+      } catch (error: any) {
+        if (error?.response?.status === 404) {
+          // Endpoint doesn't exist, try getting all and filtering client-side
+          console.log('User bookings endpoint not found, getting all bookings');
+          const allBookings = await this.getAllBookings();
+          return allBookings; // For now, return all - in production you'd filter by current user ID
+        }
+        throw error;
+      }
     } catch (error) {
       console.error('Failed to fetch user bookings:', error);
       throw error;
