@@ -1,5 +1,6 @@
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
+import { useNavigate } from '@tanstack/react-router'
 import {
   Dialog,
   DialogContent,
@@ -11,6 +12,7 @@ import { useModal } from '@/contexts/ModalContext'
 
 export function AuthModal() {
   const { isLoginOpen, isRegisterOpen, closeAll } = useModal()
+  const navigate = useNavigate()
   const isOpen = isLoginOpen || isRegisterOpen
   const defaultTab = isLoginOpen ? 'login' : 'register'
 
@@ -18,6 +20,8 @@ export function AuthModal() {
     closeAll()
     // Trigger auth state update
     window.dispatchEvent(new CustomEvent('auth-change'))
+    // Navigate to dashboard
+    navigate({ to: '/dashboard' })
   }
 
   return (

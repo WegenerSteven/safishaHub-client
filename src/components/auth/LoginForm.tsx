@@ -64,8 +64,8 @@ export function LoginForm({
       {/* Tab Navigation - only show if requested */}
       {showTabs && (
         <div className="flex bg-gray-100 rounded-lg p-1">
-          <div className="flex-1 text-center py-2 px-4 bg-white rounded-md shadow-sm">
-            <span className="text-sm font-medium text-gray-900">Login</span>
+          <div className="flex-1 text-center py-2 px-4 bg-white rounded-md shadow-sm cursor-pointer">
+            <span className="text-sm font-medium text-gray-900">Logi</span>
           </div>
           <Link
             to="/register"

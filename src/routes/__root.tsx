@@ -9,6 +9,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import Header from '../components/Header'
 import { ModalProvider } from '../contexts/ModalContext'
 import { ThemeProvider } from '../components/theme/theme-provider'
+// import { Toaster } from '../components/ui/sonner'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
@@ -58,6 +59,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <ModalProvider>
           <Header />
           <Outlet />
+          {/* <Toaster /> */}
           <TanStackRouterDevtools />
           <TanStackQueryLayout />
         </ModalProvider>

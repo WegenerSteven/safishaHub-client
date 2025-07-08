@@ -17,7 +17,7 @@ export const Route = createFileRoute('/login')({
 
 function RouteComponent() {
   const navigate = useNavigate()
-  const { login, googleLogin, isLoading, error, clearError } = useAuth()
+  const { login, googleLogin, isLoading, clearError } = useAuth()
 
   const handleLogin = async (data: any) => {
     try {
@@ -26,8 +26,8 @@ function RouteComponent() {
 
       // Redirect to dashboard - the dashboard component will handle the user type
       navigate({ to: '/dashboard' })
-      console.log('Login successful!')
     } catch (error) {
+      // Error is already handled by useAuth hook with toast notification
       console.error('Login error:', error)
     }
   }
@@ -46,11 +46,6 @@ function RouteComponent() {
         onGoogleLogin={handleGoogleLogin}
         isLoading={isLoading}
       />
-      {error && (
-        <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md">
-          <p className="text-sm text-red-600">{error}</p>
-        </div>
-      )}
     </AuthLayout>
   )
 }
