@@ -27,9 +27,9 @@ function ProfilePage() {
     setUser(currentUser)
     if (currentUser) {
       setFormData({
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        email: currentUser.email,
+        firstName: currentUser.firstName || '',
+        lastName: currentUser.lastName || '',
+        email: currentUser.email || '',
         phone: '', // Would come from API
         address: '', // Would come from API
       })
@@ -46,9 +46,9 @@ function ProfilePage() {
   const handleCancel = () => {
     if (user) {
       setFormData({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
         phone: '',
         address: '',
       })
@@ -105,8 +105,8 @@ function ProfilePage() {
           <div className="flex items-center space-x-4">
             <div className="relative">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold">
-                {user.firstName[0]}
-                {user.lastName[0]}
+                {user?.firstName?.[0] || 'U'}
+                {user?.lastName?.[0] || ''}
               </div>
               {isEditing && (
                 <button className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50">
@@ -119,7 +119,7 @@ function ProfilePage() {
                 {user.firstName} {user.lastName}
               </h2>
               <p className="text-blue-100 capitalize">
-                {user.role.replace('_', ' ')}
+                {user.role?.replace('_', ' ') || 'User'}
               </p>
               <div className="flex items-center mt-1">
                 <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
@@ -154,7 +154,7 @@ function ProfilePage() {
               ) : (
                 <div className="flex items-center space-x-2 py-2">
                   <User className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-900">{user.firstName}</span>
+                  <span className="text-gray-900">{user?.firstName || 'Not provided'}</span>
                 </div>
               )}
             </div>
@@ -179,7 +179,7 @@ function ProfilePage() {
               ) : (
                 <div className="flex items-center space-x-2 py-2">
                   <User className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-900">{user.lastName}</span>
+                  <span className="text-gray-900">{user?.lastName || 'Not provided'}</span>
                 </div>
               )}
             </div>
@@ -205,7 +205,7 @@ function ProfilePage() {
               ) : (
                 <div className="flex items-center space-x-2 py-2">
                   <Mail className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-900">{user.email}</span>
+                  <span className="text-gray-900">{user?.email || 'Not provided'}</span>
                 </div>
               )}
             </div>
@@ -276,27 +276,27 @@ function ProfilePage() {
           <div>
             <span className="text-gray-600">Account Type:</span>
             <span className="ml-2 font-medium capitalize">
-              {user.role.replace('_', ' ')}
+              {user?.role?.replace('_', ' ') || 'User'}
             </span>
           </div>
           <div>
             <span className="text-gray-600">Member Since:</span>
             <span className="ml-2 font-medium">
-              {new Date(user.createdAt).toLocaleDateString()}
+              {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
             </span>
           </div>
           <div>
             <span className="text-gray-600">Last Updated:</span>
             <span className="ml-2 font-medium">
-              {new Date(user.updatedAt).toLocaleDateString()}
+              {user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A'}
             </span>
           </div>
           <div>
             <span className="text-gray-600">Verification Status:</span>
             <span
-              className={`ml-2 font-medium ${user.isVerified ? 'text-green-600' : 'text-yellow-600'}`}
+              className={`ml-2 font-medium ${user?.isVerified ? 'text-green-600' : 'text-yellow-600'}`}
             >
-              {user.isVerified ? 'Verified' : 'Pending Verification'}
+              {user?.isVerified ? 'Verified' : 'Pending Verification'}
             </span>
           </div>
         </div>
