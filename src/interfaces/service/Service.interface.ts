@@ -36,8 +36,8 @@ export interface ServiceCategory {
 }
 
 export interface ServicePricing {
-  id: string;
-  service_id: string;
+  id?: string;
+  service_id?: string;
   vehicle_type: VehicleType;
   base_price: number;
   currency: string;
