@@ -22,8 +22,19 @@ export class ServicesService {
         });
       }
       
-      const response = await apiService.get<Service[]>(`/services?${params.toString()}`);
-      return response;
+      const response = await apiService.get<Service[] | any>(`/services?${params.toString()}`);
+      
+      // Ensure we return an array even if the API returns an object with services property
+      if (response && Array.isArray(response)) {
+        return response;
+      } else if (response && response.services && Array.isArray(response.services)) {
+        return response.services;
+      } else if (response && response.data && Array.isArray(response.data)) {
+        return response.data;
+      } else {
+        console.warn('Services API did not return an array. Got:', response);
+        return []; // Return empty array as fallback
+      }
     } catch (error) {
       console.error('Failed to fetch services:', error);
       throw error;
