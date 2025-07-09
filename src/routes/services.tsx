@@ -27,7 +27,17 @@ function RouteComponent() {
       
       // Load services and categories in parallel
       const servicesData = await servicesService.getAllServices({ is_available: true, status: ServiceStatus.ACTIVE })
-      setServices(servicesData)
+      console.log('Services data received:', servicesData)
+      
+      // Ensure we have an array of services
+      if (servicesData && Array.isArray(servicesData)) {
+        setServices(servicesData)
+      } else {
+        console.error('Services data is not an array:', servicesData)
+        setError('Invalid data format received from server.')
+        // Fallback to mock data for development
+        setServices(getMockServices())
+      }
     } catch (err) {
       console.error('Failed to load services data:', err)
       setError('Failed to load services. Please try again later.')
