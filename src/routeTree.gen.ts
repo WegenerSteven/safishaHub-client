@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ServiceProviderDashboardRouteImport } from './routes/service-provider-dashboard'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FleetRouteImport } from './routes/fleet'
@@ -26,6 +27,12 @@ const ServicesRoute = ServicesRouteImport.update({
   path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServiceProviderDashboardRoute =
+  ServiceProviderDashboardRouteImport.update({
+    id: '/service-provider-dashboard',
+    path: '/service-provider-dashboard',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -85,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/service-provider-dashboard': typeof ServiceProviderDashboardRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -97,6 +105,7 @@ export interface FileRoutesByTo {
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/service-provider-dashboard': typeof ServiceProviderDashboardRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -111,6 +120,7 @@ export interface FileRoutesById {
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/service-provider-dashboard': typeof ServiceProviderDashboardRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/login'
     | '/register'
+    | '/service-provider-dashboard'
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/login'
     | '/register'
+    | '/service-provider-dashboard'
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
@@ -151,6 +163,7 @@ export interface FileRouteTypes {
     | '/fleet'
     | '/login'
     | '/register'
+    | '/service-provider-dashboard'
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
@@ -165,6 +178,7 @@ export interface RootRouteChildren {
   FleetRoute: typeof FleetRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ServiceProviderDashboardRoute: typeof ServiceProviderDashboardRoute
   ServicesRoute: typeof ServicesRoute
 }
 
@@ -175,6 +189,13 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/service-provider-dashboard': {
+      id: '/service-provider-dashboard'
+      path: '/service-provider-dashboard'
+      fullPath: '/service-provider-dashboard'
+      preLoaderRoute: typeof ServiceProviderDashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -274,6 +295,7 @@ const rootRouteChildren: RootRouteChildren = {
   FleetRoute: FleetRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ServiceProviderDashboardRoute: ServiceProviderDashboardRoute,
   ServicesRoute: ServicesRoute,
 }
 export const routeTree = rootRouteImport
