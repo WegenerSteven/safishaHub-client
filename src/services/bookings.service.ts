@@ -107,7 +107,30 @@ export class BookingsService {
   }
 
   /**
-   * Get a single booking by ID
+   * Get bookings where the current user is the service provider
+   */
+  async getProviderBookings(): Promise<Booking[]> {
+    try {
+      const response = await apiService.get<Booking[] | { data: Booking[] }>('/bookings/provider');
+      
+      // Handle both array and object with data property responses
+      if (Array.isArray(response)) {
+        return response;
+      } else if (response && typeof response === 'object' && 'data' in response && Array.isArray(response.data)) {
+        return response.data;
+      }
+      
+      // If we can't determine the structure, log it and return empty array
+      console.error('Unexpected provider bookings response format:', response);
+      return [];
+    } catch (error) {
+      console.error('Failed to fetch provider bookings:', error);
+      return []; // Return empty array instead of throwing to prevent UI crashes
+    }
+  }
+
+  /**
+   * Get booking by ID
    */
   async getBookingById(id: string): Promise<Booking> {
     try {
@@ -145,61 +168,11 @@ export class BookingsService {
   /**
    * Cancel a booking
    */
-  async cancelBooking(id: string, reason?: string): Promise<Booking> {
+  async cancelBooking(id: string): Promise<Booking> {
     try {
-      return await apiService.patch<{ reason?: string }, Booking>(`/bookings/${id}/cancel`, { reason });
+      return await apiService.post<null, Booking>(`/bookings/${id}/cancel`);
     } catch (error) {
       console.error(`Failed to cancel booking ${id}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Confirm a booking (for service providers)
-   */
-  async confirmBooking(id: string): Promise<Booking> {
-    try {
-      return await apiService.patch<undefined, Booking>(`/bookings/${id}/confirm`);
-    } catch (error) {
-      console.error(`Failed to confirm booking ${id}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Mark booking as completed
-   */
-  async completeBooking(id: string): Promise<Booking> {
-    try {
-      return await apiService.patch<undefined, Booking>(`/bookings/${id}/complete`);
-    } catch (error) {
-      console.error(`Failed to complete booking ${id}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get booking history for a user
-   */
-  async getBookingHistory(userId?: string): Promise<Booking[]> {
-    try {
-      const endpoint = userId ? `/bookings/history/${userId}` : '/bookings/history';
-      return await apiService.get<Booking[]>(endpoint);
-    } catch (error) {
-      console.error('Failed to fetch booking history:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get upcoming bookings for a user
-   */
-  async getUpcomingBookings(userId?: string): Promise<Booking[]> {
-    try {
-      const endpoint = userId ? `/bookings/upcoming/${userId}` : '/bookings/upcoming';
-      return await apiService.get<Booking[]>(endpoint);
-    } catch (error) {
-      console.error('Failed to fetch upcoming bookings:', error);
       throw error;
     }
   }
