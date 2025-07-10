@@ -1,3 +1,5 @@
+import type { Booking } from '../booking/Booking.interface';
+
 export interface DashboardData {
   user: {
     id: string;
@@ -14,5 +16,13 @@ export interface DashboardData {
     rating?: number;
     isVerified?: boolean;
     businessName?: string;
+    monthlyRevenue?: number;
   };
+  recentBookings?: Booking[];
+  upcomingBookings?: Booking[];
+  popularServices?: {
+    id: string;
+    name: string;
+    bookingCount: number;
+  }[];
 }
