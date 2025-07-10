@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { CustomerDashboard } from '@/components/dashboard/CustomerDashboard'
-import { ServiceProviderDashboard } from '@/components/dashboard/ServiceProviderDashboard'
+import { ServiceProviderDashboard } from '../../components/dashboard/ServiceProviderDashboard'
 import { authService } from '@/services/auth.service'
 import { useEffect, useState } from 'react'
 import type { User } from '@/interfaces/auth/User.interface'

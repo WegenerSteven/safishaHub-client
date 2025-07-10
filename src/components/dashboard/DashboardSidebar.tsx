@@ -109,6 +109,12 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
       icon: Calendar,
       current: location.pathname === '/dashboard/bookings',
     },
+     {
+      name: 'Services',
+      href: '/dashboard/services',
+      icon: Calendar,
+      current: location.pathname === '/dashboard/services',
+    },
     {
       name: 'Profile',
       href: '/dashboard/profile',

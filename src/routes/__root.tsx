@@ -9,7 +9,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import Header from '../components/Header'
 import { ModalProvider } from '../contexts/ModalContext'
 import { ThemeProvider } from '../components/theme/theme-provider'
-// import { Toaster } from '../components/ui/sonner'
+import { Toaster } from 'react-hot-toast'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
@@ -59,7 +59,17 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <ModalProvider>
           <Header />
           <Outlet />
-          {/* <Toaster /> */}
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: 'var(--background)',
+                color: 'var(--foreground)',
+                border: '1px solid var(--border)',
+              },
+            }}
+          />
           <TanStackRouterDevtools />
           <TanStackQueryLayout />
         </ModalProvider>
