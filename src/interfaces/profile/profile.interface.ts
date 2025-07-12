@@ -24,6 +24,8 @@ export interface CustomerProfile {
   total_spent: number;
   loyalty_tier: string;
   loyalty_points: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ServiceProviderProfile {

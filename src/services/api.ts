@@ -115,17 +115,19 @@ class ApiService {
     }
 
     async register(userData: RegisterRequest): Promise<ApiResponse<User>> {
-        // Transform frontend fields to match backend DTO
+        // Use the new role-based registration structure that matches backend DTO
         const backendData = {
-            first_name: userData.firstName,
-            last_name: userData.lastName,
+            first_name: userData.first_name,
+            last_name: userData.last_name,
             email: userData.email,
             password: userData.password,
-            role: userData.accountType,
-            ...(userData.phone && { phone: userData.phone }) // Only include phone if provided
+            role: userData.role,
+            ...(userData.phone && { phone: userData.phone }),
+            ...(userData.customer_data && { customer_data: userData.customer_data }),
+            ...(userData.provider_data && { provider_data: userData.provider_data }),
         };
         
-        const response = await this.post<typeof backendData, any>('/auth/signup', backendData);
+        const response = await this.post<typeof backendData, any>('/users/register', backendData);
         
         // Handle the backend response structure: { user, tokens, message }
         if (response.tokens?.accessToken) {

@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { authService } from '@/services/auth.service'
+import type { RegisterRequest } from '@/interfaces/auth/User.interface'
 import { useModal } from '@/contexts/ModalContext'
 
 interface RegisterFormData {
@@ -25,6 +26,11 @@ interface RegisterFormData {
   confirmPassword: string
   accountType: 'customer' | 'service_provider'
   agreeToTerms: boolean
+  // Role-specific fields
+  businessName?: string
+  businessDescription?: string
+  businessAddress?: string
+  businessPhone?: string
 }
 
 interface RegisterFormProps {
@@ -55,6 +61,10 @@ export function RegisterForm({
       confirmPassword: '',
       accountType: 'customer' as const,
       agreeToTerms: false,
+      businessName: '',
+      businessDescription: '',
+      businessAddress: '',
+      businessPhone: '',
     } as RegisterFormData,
     onSubmit: async ({ value }) => {
       if (onSubmit) {
@@ -62,13 +72,31 @@ export function RegisterForm({
       } else {
         // Default implementation using auth service
         try {
-          await authService.register({
-            firstName: value.firstName,
-            lastName: value.lastName,
+          const registerData: RegisterRequest = {
+            first_name: value.firstName,
+            last_name: value.lastName,
             email: value.email,
             password: value.password,
-            accountType: value.accountType,
-          })
+            role: value.accountType,
+          }
+
+          // Add role-specific data
+          if (value.accountType === 'service_provider') {
+            registerData.provider_data = {
+              business_name: value.businessName || '',
+              description: value.businessDescription,
+              address: value.businessAddress || '',
+              phone: value.businessPhone,
+            }
+          } else {
+            registerData.customer_data = {
+              email_notifications: true,
+              sms_notifications: true,
+              preferred_contact_method: 'email',
+            }
+          }
+
+          await authService.register(registerData)
           onSuccess?.()
         } catch (error) {
           console.error('Registration failed:', error)
@@ -463,6 +491,142 @@ export function RegisterForm({
             )}
           </form.Field>
         </div>
+
+        {/* Service Provider Specific Fields */}
+        <form.Field name="accountType">
+          {(field) => 
+            field.state.value === 'service_provider' && (
+              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="text-lg font-medium text-blue-900 mb-3">
+                  Business Information
+                </h3>
+                
+                {/* Business Name */}
+                <div>
+                  <Label
+                    htmlFor="businessName"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Business Name *
+                  </Label>
+                  <form.Field
+                    name="businessName"
+                    validators={{
+                      onChange: ({ value }) => {
+                        if (field.state.value === 'service_provider' && !value) {
+                          return 'Business name is required for service providers'
+                        }
+                        return undefined
+                      },
+                    }}
+                  >
+                    {(businessField) => (
+                      <div>
+                        <Input
+                          id="businessName"
+                          type="text"
+                          placeholder="Enter your business name"
+                          value={businessField.state.value || ''}
+                          onChange={(e) => businessField.handleChange(e.target.value)}
+                          className={businessField.state.meta.errors.length > 0 ? 'border-red-500' : ''}
+                        />
+                        {businessField.state.meta.errors.length > 0 && (
+                          <span className="text-red-500 text-sm">
+                            {businessField.state.meta.errors[0]}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+
+                {/* Business Description */}
+                <div>
+                  <Label
+                    htmlFor="businessDescription"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Business Description
+                  </Label>
+                  <form.Field name="businessDescription">
+                    {(descField) => (
+                      <textarea
+                        id="businessDescription"
+                        placeholder="Describe your car wash services"
+                        value={descField.state.value || ''}
+                        onChange={(e) => descField.handleChange(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        rows={3}
+                      />
+                    )}
+                  </form.Field>
+                </div>
+
+                {/* Business Address */}
+                <div>
+                  <Label
+                    htmlFor="businessAddress"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Business Address *
+                  </Label>
+                  <form.Field
+                    name="businessAddress"
+                    validators={{
+                      onChange: ({ value }) => {
+                        if (field.state.value === 'service_provider' && !value) {
+                          return 'Business address is required for service providers'
+                        }
+                        return undefined
+                      },
+                    }}
+                  >
+                    {(addressField) => (
+                      <div>
+                        <textarea
+                          id="businessAddress"
+                          placeholder="Enter your business address"
+                          value={addressField.state.value || ''}
+                          onChange={(e) => addressField.handleChange(e.target.value)}
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                            addressField.state.meta.errors.length > 0 ? 'border-red-500' : ''
+                          }`}
+                          rows={2}
+                        />
+                        {addressField.state.meta.errors.length > 0 && (
+                          <span className="text-red-500 text-sm">
+                            {addressField.state.meta.errors[0]}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </form.Field>
+                </div>
+
+                {/* Business Phone */}
+                <div>
+                  <Label
+                    htmlFor="businessPhone"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Business Phone
+                  </Label>
+                  <form.Field name="businessPhone">
+                    {(phoneField) => (
+                      <Input
+                        id="businessPhone"
+                        type="tel"
+                        placeholder="e.g., +254712345678"
+                        value={phoneField.state.value || ''}
+                        onChange={(e) => phoneField.handleChange(e.target.value)}
+                      />
+                    )}
+                  </form.Field>
+                </div>
+              </div>
+            )
+          }
+        </form.Field>
 
         {/* Submit Button */}
         <Button

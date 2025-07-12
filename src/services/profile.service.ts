@@ -23,13 +23,13 @@ export const profileService = {
 
   // Update customer profile
   async updateCustomerProfile(data: Partial<CustomerProfile>): Promise<CustomerProfile> {
-    const response = await api.put<Partial<CustomerProfile>, ApiResponse<CustomerProfile>>('/users/profile/customer', data);
+    const response = await api.put<Partial<CustomerProfile>, ApiResponse<CustomerProfile>>('/customers/profile', data);
     return response.data;
   },
 
   // Update service provider profile
   async updateServiceProviderProfile(data: Partial<ServiceProviderProfile>): Promise<ServiceProviderProfile> {
-    const response = await api.put<Partial<ServiceProviderProfile>, ApiResponse<ServiceProviderProfile>>('/users/profile/service-provider', data);
+    const response = await api.put<Partial<ServiceProviderProfile>, ApiResponse<ServiceProviderProfile>>('/service-provider/profile', data);
     return response.data;
   },
 

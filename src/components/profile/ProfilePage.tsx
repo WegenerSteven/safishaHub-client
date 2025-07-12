@@ -77,11 +77,13 @@ export const ProfilePage: React.FC = () => {
   // Update service provider profile mutation
   const updateServiceProviderMutation = useMutation({
     mutationFn: profileService.updateServiceProviderProfile,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Success response:', data);
       toast.success('Service provider profile updated successfully');
       refetch();
     },
     onError: (error: any) => {
+      console.log('Success response:', error);
       toast.error(error.message || 'Failed to update service provider profile');
     },
   });
@@ -140,6 +142,7 @@ export const ProfilePage: React.FC = () => {
   };
 
   const onSubmitServiceProvider = (data: ServiceProviderFormData) => {
+    console.log('Service Provider Form Data:', data);
     updateServiceProviderMutation.mutate(data);
   };
 
