@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useForm } from '@tanstack/react-form'
-import { Link } from '@tanstack/react-router'
 import { Eye, EyeOff } from 'lucide-react'
 import { GoogleButton } from './GoogleButton'
 import { Button } from '@/components/ui/button'
@@ -21,7 +20,6 @@ interface LoginFormProps {
   onGoogleLogin?: () => void
   onSuccess?: () => void
   isLoading?: boolean
-  showTabs?: boolean
 }
 
 export function LoginForm({
@@ -29,7 +27,6 @@ export function LoginForm({
   onGoogleLogin,
   onSuccess,
   isLoading = false,
-  showTabs = true,
 }: LoginFormProps) {
   const [showPassword, setShowPassword] = React.useState(false)
   const { openRegister } = useModal()
@@ -61,36 +58,19 @@ export function LoginForm({
 
   return (
     <div className="space-y-6">
-      {/* Tab Navigation - only show if requested */}
-      {showTabs && (
-        <div className="flex bg-gray-100 rounded-lg p-1">
-          <div className="flex-1 text-center py-2 px-4 bg-white rounded-md shadow-sm cursor-pointer">
-            <span className="text-sm font-medium text-gray-900">Logi</span>
-          </div>
-          <Link
-            to="/register"
-            className="flex-1 text-center py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
+      {/* Switch to register */}
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          Don't have an account?{' '}
+          <button
+            type="button"
+            onClick={openRegister}
+            className="text-blue-600 hover:text-blue-700 font-medium"
           >
-            <span className="text-sm font-medium text-gray-600">Register</span>
-          </Link>
-        </div>
-      )}
-
-      {/* Modal version - switch to register */}
-      {!showTabs && (
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <button
-              type="button"
-              onClick={openRegister}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Register here
-            </button>
-          </p>
-        </div>
-      )}
+            Register here
+          </button>
+        </p>
+      </div>
 
       {/* Login Form */}
       <form

@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useForm } from '@tanstack/react-form'
-import { Link } from '@tanstack/react-router'
 import { Eye, EyeOff } from 'lucide-react'
 import { GoogleButton } from './GoogleButton'
 import { Button } from '@/components/ui/button'
@@ -26,11 +25,6 @@ interface RegisterFormData {
   confirmPassword: string
   accountType: 'customer' | 'service_provider'
   agreeToTerms: boolean
-  // Role-specific fields
-  businessName?: string
-  businessDescription?: string
-  businessAddress?: string
-  businessPhone?: string
 }
 
 interface RegisterFormProps {
@@ -38,7 +32,6 @@ interface RegisterFormProps {
   onGoogleLogin?: () => void
   onSuccess?: () => void
   isLoading?: boolean
-  showTabs?: boolean
 }
 
 export function RegisterForm({
@@ -46,11 +39,10 @@ export function RegisterForm({
   onGoogleLogin,
   onSuccess,
   isLoading = false,
-  showTabs = true,
 }: RegisterFormProps) {
+  const { openLogin } = useModal()
   const [showPassword, setShowPassword] = React.useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
-  const { openLogin } = useModal()
 
   const form = useForm({
     defaultValues: {
@@ -61,10 +53,6 @@ export function RegisterForm({
       confirmPassword: '',
       accountType: 'customer' as const,
       agreeToTerms: false,
-      businessName: '',
-      businessDescription: '',
-      businessAddress: '',
-      businessPhone: '',
     } as RegisterFormData,
     onSubmit: async ({ value }) => {
       if (onSubmit) {
@@ -72,6 +60,8 @@ export function RegisterForm({
       } else {
         // Default implementation using auth service
         try {
+          console.log('Form submission - Form values:', value);
+          
           const registerData: RegisterRequest = {
             first_name: value.firstName,
             last_name: value.lastName,
@@ -79,27 +69,20 @@ export function RegisterForm({
             password: value.password,
             role: value.accountType,
           }
+          
+          console.log('Form submission - RegisterRequest data:', registerData);
 
-          // Add role-specific data
-          if (value.accountType === 'service_provider') {
-            registerData.provider_data = {
-              business_name: value.businessName || '',
-              description: value.businessDescription,
-              address: value.businessAddress || '',
-              phone: value.businessPhone,
-            }
-          } else {
-            registerData.customer_data = {
-              email_notifications: true,
-              sms_notifications: true,
-              preferred_contact_method: 'email',
-            }
-          }
-
+          console.log('Form submission - Final data to send:', registerData);
           await authService.register(registerData)
           onSuccess?.()
-        } catch (error) {
+        } catch (error: any) {
           console.error('Registration failed:', error)
+          console.error('Error details:', {
+            message: error?.message,
+            response: error?.response,
+            data: error?.response?.data,
+            status: error?.response?.status
+          })
           throw error
         }
       }
@@ -108,36 +91,19 @@ export function RegisterForm({
 
   return (
     <div className="space-y-6">
-      {/* Tab Navigation - only show if requested */}
-      {showTabs && (
-        <div className="flex bg-gray-100 rounded-lg p-1">
-          <Link
-            to="/login"
-            className="flex-1 text-center py-2 px-4 rounded-md hover:bg-gray-50 transition-colors"
+      {/* Switch to login */}
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          Already have an account?{' '}
+          <button
+            type="button"
+            onClick={openLogin}
+            className="text-blue-600 hover:text-blue-700 font-medium"
           >
-            <span className="text-sm font-medium text-gray-600">Login</span>
-          </Link>
-          <div className="flex-1 text-center py-2 px-4 bg-white rounded-md shadow-sm">
-            <span className="text-sm font-medium text-gray-900">Register</span>
-          </div>
-        </div>
-      )}
-
-      {/* Modal version - switch to login */}
-      {!showTabs && (
-        <div className="text-center">
-          <p className="text-sm text-gray-600">
-            Already have an account?{' '}
-            <button
-              type="button"
-              onClick={openLogin}
-              className="text-blue-600 hover:text-blue-700 font-medium"
-            >
-              Sign in here
-            </button>
-          </p>
-        </div>
-      )}
+            Sign in here
+          </button>
+        </p>
+      </div>
 
       {/* Register Form */}
       <form
@@ -491,142 +457,6 @@ export function RegisterForm({
             )}
           </form.Field>
         </div>
-
-        {/* Service Provider Specific Fields */}
-        <form.Field name="accountType">
-          {(field) => 
-            field.state.value === 'service_provider' && (
-              <div className="space-y-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h3 className="text-lg font-medium text-blue-900 mb-3">
-                  Business Information
-                </h3>
-                
-                {/* Business Name */}
-                <div>
-                  <Label
-                    htmlFor="businessName"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Business Name *
-                  </Label>
-                  <form.Field
-                    name="businessName"
-                    validators={{
-                      onChange: ({ value }) => {
-                        if (field.state.value === 'service_provider' && !value) {
-                          return 'Business name is required for service providers'
-                        }
-                        return undefined
-                      },
-                    }}
-                  >
-                    {(businessField) => (
-                      <div>
-                        <Input
-                          id="businessName"
-                          type="text"
-                          placeholder="Enter your business name"
-                          value={businessField.state.value || ''}
-                          onChange={(e) => businessField.handleChange(e.target.value)}
-                          className={businessField.state.meta.errors.length > 0 ? 'border-red-500' : ''}
-                        />
-                        {businessField.state.meta.errors.length > 0 && (
-                          <span className="text-red-500 text-sm">
-                            {businessField.state.meta.errors[0]}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </form.Field>
-                </div>
-
-                {/* Business Description */}
-                <div>
-                  <Label
-                    htmlFor="businessDescription"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Business Description
-                  </Label>
-                  <form.Field name="businessDescription">
-                    {(descField) => (
-                      <textarea
-                        id="businessDescription"
-                        placeholder="Describe your car wash services"
-                        value={descField.state.value || ''}
-                        onChange={(e) => descField.handleChange(e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        rows={3}
-                      />
-                    )}
-                  </form.Field>
-                </div>
-
-                {/* Business Address */}
-                <div>
-                  <Label
-                    htmlFor="businessAddress"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Business Address *
-                  </Label>
-                  <form.Field
-                    name="businessAddress"
-                    validators={{
-                      onChange: ({ value }) => {
-                        if (field.state.value === 'service_provider' && !value) {
-                          return 'Business address is required for service providers'
-                        }
-                        return undefined
-                      },
-                    }}
-                  >
-                    {(addressField) => (
-                      <div>
-                        <textarea
-                          id="businessAddress"
-                          placeholder="Enter your business address"
-                          value={addressField.state.value || ''}
-                          onChange={(e) => addressField.handleChange(e.target.value)}
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                            addressField.state.meta.errors.length > 0 ? 'border-red-500' : ''
-                          }`}
-                          rows={2}
-                        />
-                        {addressField.state.meta.errors.length > 0 && (
-                          <span className="text-red-500 text-sm">
-                            {addressField.state.meta.errors[0]}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </form.Field>
-                </div>
-
-                {/* Business Phone */}
-                <div>
-                  <Label
-                    htmlFor="businessPhone"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Business Phone
-                  </Label>
-                  <form.Field name="businessPhone">
-                    {(phoneField) => (
-                      <Input
-                        id="businessPhone"
-                        type="tel"
-                        placeholder="e.g., +254712345678"
-                        value={phoneField.state.value || ''}
-                        onChange={(e) => phoneField.handleChange(e.target.value)}
-                      />
-                    )}
-                  </form.Field>
-                </div>
-              </div>
-            )
-          }
-        </form.Field>
 
         {/* Submit Button */}
         <Button
