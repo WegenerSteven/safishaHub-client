@@ -1,24 +1,39 @@
+import type { Business } from '../business/Business.interface';
+import type { User } from '../auth/User.interface';
+
 export interface Service {
   id: string;
   provider_id: string;
   category_id: string;
+  business_id?: string;
   location_id?: string;
   name: string;
   description?: string;
-  price: number;
-  currency: string;
+  short_description?: string;
+  base_price: string; // API returns as string
+  price?: number; // For backward compatibility
+  currency?: string;
+  discounted_price?: string;
   duration_minutes: number;
   service_type: ServiceType;
-  vehicle_types: VehicleType[];
+  vehicle_type: VehicleType; // API returns single vehicle_type
+  vehicle_types?: VehicleType[]; // For backward compatibility
   status: ServiceStatus;
+  is_active: boolean;
   is_available: boolean;
   images?: string[];
+  image_url?: string;
   features?: string[];
   requirements?: string[];
+  booking_count?: number;
+  average_rating?: string;
+  review_count?: number;
   cancellation_policy?: string;
   refund_policy?: string;
   terms_conditions?: string;
   metadata?: Record<string, any>;
+  provider?: User;
+  business?: Business;
   created_at: string;
   updated_at: string;
 }
