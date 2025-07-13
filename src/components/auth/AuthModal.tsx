@@ -44,11 +44,11 @@ export function AuthModal() {
           </TabsList>
 
           <TabsContent value="login" className="mt-6">
-            <LoginForm showTabs={false} onSuccess={handleSuccess} />
+            <LoginForm onSuccess={handleSuccess} />
           </TabsContent>
 
           <TabsContent value="register" className="mt-6">
-            <RegisterForm showTabs={false} onSuccess={handleSuccess} />
+            <RegisterForm onSuccess={handleSuccess} />
           </TabsContent>
         </Tabs>
       </DialogContent>
