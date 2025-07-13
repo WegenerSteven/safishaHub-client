@@ -1,17 +1,24 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { CheckCircle, Clock, Crown, Droplets, Sparkles, Loader2 } from 'lucide-react'
+import { CheckCircle, Clock, Crown, Droplets, Sparkles, Loader2, MapPin, Star, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
-import type { Service } from '@/interfaces'
-import { ServiceType, ServiceStatus } from '@/interfaces'
+import type { Service, User } from '@/interfaces'
+import type { Business } from '@/interfaces/business/Business.interface'
+import { ServiceType, ServiceStatus } from '@/interfaces/service/Service.interface'
 import { servicesService } from '@/services'
+
+// Extended interface for service with provider and business details
+interface ServiceWithProvider extends Service {
+  provider?: User;
+  business?: Business;
+}
 
 export const Route = createFileRoute('/services')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const [services, setServices] = useState<Service[]>([])
+  const [services, setServices] = useState<ServiceWithProvider[]>([])
   // const [categories, setCategories] = useState<ServiceCategory[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -25,25 +32,23 @@ function RouteComponent() {
       setLoading(true)
       setError(null)
       
-      // Load services and categories in parallel
+      // Load services directly from API - no mock data fallback
       const servicesData = await servicesService.getAllServices({ is_available: true, status: ServiceStatus.ACTIVE })
       console.log('Services data received:', servicesData)
       
       // Ensure we have an array of services
       if (servicesData && Array.isArray(servicesData)) {
         setServices(servicesData)
+        console.log('Successfully loaded', servicesData.length, 'services from database')
       } else {
         console.error('Services data is not an array:', servicesData)
         setError('Invalid data format received from server.')
-        // Fallback to mock data for development
-        setServices(getMockServices())
+        setServices([]) // Set empty array instead of mock data
       }
     } catch (err) {
       console.error('Failed to load services data:', err)
       setError('Failed to load services. Please try again later.')
-      // Fallback to mock data for development
-      setServices(getMockServices())
-      // setCategories(getMockCategories())
+      setServices([]) // Set empty array instead of mock data
     } finally {
       setLoading(false)
     }
@@ -67,6 +72,26 @@ function RouteComponent() {
       style: 'currency',
       currency: currency,
     }).format(price)
+  }
+
+  const getCurrentOperatingStatus = (operatingHours: any) => {
+    if (!operatingHours) return { isOpen: false, status: 'Hours not available' };
+    
+    const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = days[new Date().getDay()];
+    const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+    
+    const todayHours = operatingHours[today];
+    if (!todayHours || todayHours.closed) {
+      return { isOpen: false, status: 'Closed today' };
+    }
+    
+    const { open, close } = todayHours;
+    if (currentTime >= open && currentTime <= close) {
+      return { isOpen: true, status: `${open} - ${close}` };
+    }
+    
+    return { isOpen: false, status: `${open} - ${close}` };
   }
 
   if (loading) {
@@ -148,8 +173,127 @@ function RouteComponent() {
                       {service.name}
                     </h3>
                     
+                    {/* Business/Provider Information */}
+                    {(service.business || service.provider) && (
+                      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                        {/* Business info takes precedence when available */}
+                        {service.business ? (
+                          <>
+                            <div className="text-lg font-semibold text-blue-600 mb-2">
+                              {service.business.name}
+                            </div>
+                            
+                            <div className="text-sm text-gray-600 mb-2">
+                              <span className="font-medium">{service.business.type}</span>
+                            </div>
+                            
+                            <p className="text-sm text-gray-700 mb-3 line-clamp-2">
+                              {service.business.description}
+                            </p>
+                            
+                            <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                              <div className="flex items-center">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                <span>
+                                  {service.business.city && service.business.state 
+                                    ? `${service.business.city}, ${service.business.state}`
+                                    : service.business.address
+                                  }
+                                </span>
+                              </div>
+                              <div className="flex items-center">
+                                <Phone className="h-3 w-3 mr-1" />
+                                <span>{service.business.phone}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center">
+                                <Star className="h-3 w-3 mr-1 text-yellow-400 fill-current" />
+                                <span className="font-medium">{service.business.rating || 0}/5</span>
+                                <span className="text-gray-400 ml-1">
+                                  ({service.business.total_reviews || 0} reviews)
+                                </span>
+                              </div>
+                              
+                              {/* Operating Hours - Show current day status */}
+                              {service.business.operating_hours?.hours && (
+                                <div className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  <span className={getCurrentOperatingStatus(service.business.operating_hours.hours)?.isOpen 
+                                    ? 'text-green-600 font-medium' 
+                                    : 'text-red-600 font-medium'
+                                  }>
+                                    {getCurrentOperatingStatus(service.business.operating_hours.hours)?.status}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {/* Fall back to provider info if business not available */}
+                            <div className="text-lg font-semibold text-blue-600 mb-2">
+                              {service.provider?.business_name}
+                            </div>
+                            
+                            {service.provider?.business_type && (
+                              <div className="text-sm text-gray-600 mb-2">
+                                <span className="font-medium">{service.provider.business_type}</span>
+                              </div>
+                            )}
+                            
+                            {service.provider?.business_description && (
+                              <p className="text-sm text-gray-700 mb-3 line-clamp-2">
+                                {service.provider.business_description}
+                              </p>
+                            )}
+                            
+                            <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                              <div className="flex items-center">
+                                <MapPin className="h-3 w-3 mr-1" />
+                                <span>
+                                  {service.provider?.city && service.provider.state 
+                                    ? `${service.provider.city}, ${service.provider.state}`
+                                    : service.provider?.business_address
+                                  }
+                                </span>
+                              </div>
+                              <div className="flex items-center">
+                                <Phone className="h-3 w-3 mr-1" />
+                                <span>{service.provider?.business_phone || service.provider?.phone}</span>
+                              </div>
+                            </div>
+                            
+                            <div className="flex items-center justify-between text-xs">
+                              <div className="flex items-center">
+                                <Star className="h-3 w-3 mr-1 text-yellow-400 fill-current" />
+                                <span className="font-medium">{service.provider?.rating || 0}/5</span>
+                                <span className="text-gray-400 ml-1">
+                                  ({service.provider?.total_reviews || 0} reviews)
+                                </span>
+                              </div>
+                              
+                              {/* Operating Hours - Show current day status */}
+                              {service.provider?.operating_hours && (
+                                <div className="flex items-center">
+                                  <Clock className="h-3 w-3 mr-1" />
+                                  <span className={getCurrentOperatingStatus(service.provider.operating_hours)?.isOpen 
+                                    ? 'text-green-600 font-medium' 
+                                    : 'text-red-600 font-medium'
+                                  }>
+                                    {getCurrentOperatingStatus(service.provider.operating_hours)?.status}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    )}
+                    
                     <div className="text-4xl font-bold text-blue-600 mb-4">
-                      {formatPrice(service.price, service.currency)}
+                      {formatPrice(parseFloat(service.base_price || '0'), 'USD')} {/* Default to USD since API doesn't return currency */}
                     </div>
                     
                     <div className="space-y-3 mb-6">
@@ -178,7 +322,7 @@ function RouteComponent() {
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3"
                       onClick={() => handleSelectService(service)}
                     >
-                      Select Package
+                      Book This Service
                     </Button>
                   </div>
                 )
@@ -190,70 +334,26 @@ function RouteComponent() {
     </div>
   )
 
-  function handleSelectService(service: Service) {
+  function handleSelectService(service: ServiceWithProvider) {
     // Navigate to booking page with selected service
-    // This would typically use React Router navigation
-    console.log('Selected service:', service)
-    // For now, we'll just log it. Later we can add navigation to booking page
-    alert(`Selected ${service.name} - ${formatPrice(service.price, service.currency)}`)
+    // Store the selected service in localStorage for the booking process
+    localStorage.setItem('selectedService', JSON.stringify(service));
+    
+    // Prepare provider info based on available data
+    let providerInfo = '';
+    
+    // Prioritize business data when available
+    if (service.business) {
+      providerInfo = `\n\nBusiness: ${service.business.name}\nLocation: ${service.business.address}, ${service.business.city}\nPhone: ${service.business.phone}\nRating: ${service.business.rating || 0}/5 (${service.business.total_reviews || 0} reviews)`;
+    }
+    // Fall back to provider data if no business data
+    else if (service.provider) {
+      providerInfo = `\n\nProvider: ${service.provider.business_name}\nLocation: ${service.provider.business_address}, ${service.provider.city}\nPhone: ${service.provider.business_phone}\nRating: ${service.provider.rating || 0}/5 (${service.provider.total_reviews || 0} reviews)`;
+    }
+      
+    alert(`Selected Service: ${service.name}\nPrice: ${formatPrice(parseFloat(service.base_price || '0'), 'USD')}\nDuration: ${service.duration_minutes} minutes${providerInfo}\n\nService stored for booking. You can now proceed to create a booking for this service.`);
+    
+    // TODO: Navigate to booking page
+    // window.location.href = `/booking?serviceId=${service.id}`;
   }
-
-  // Mock data functions for fallback
-  function getMockServices(): Service[] {
-    return [
-      {
-        id: '1',
-        provider_id: 'provider-1',
-        category_id: 'cat-1',
-        name: 'Basic Wash',
-        description: 'Essential car wash for everyday cleanliness',
-        price: 15,
-        currency: 'USD',
-        duration_minutes: 20,
-        service_type: ServiceType.BASIC,
-        vehicle_types: ['sedan', 'suv', 'hatchback'] as any,
-        status: 'active' as any,
-        is_available: true,
-        features: ['Exterior wash', 'Tire cleaning', 'Basic interior vacuum'],
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
-      },
-      {
-        id: '2',
-        provider_id: 'provider-1',
-        category_id: 'cat-1',
-        name: 'Premium Wash',
-        description: 'Complete car wash with interior detailing',
-        price: 35,
-        currency: 'USD',
-        duration_minutes: 45,
-        service_type: ServiceType.PREMIUM,
-        vehicle_types: ['sedan', 'suv', 'hatchback'] as any,
-        status: 'active' as any,
-        is_available: true,
-        features: ['Everything in Basic', 'Interior detailing', 'Wax coating', 'Dashboard cleaning'],
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
-      },
-      {
-        id: '3',
-        provider_id: 'provider-1',
-        category_id: 'cat-1',
-        name: 'Deluxe Detailing',
-        description: 'Professional detailing service with premium care',
-        price: 65,
-        currency: 'USD',
-        duration_minutes: 90,
-        service_type: ServiceType.DELUXE,
-        vehicle_types: ['sedan', 'suv', 'hatchback'] as any,
-        status: 'active' as any,
-        is_available: true,
-        features: ['Everything in Premium', 'Leather conditioning', 'Engine bay cleaning', 'Tire shine'],
-        created_at: '2024-01-01T00:00:00Z',
-        updated_at: '2024-01-01T00:00:00Z'
-      }
-    ]
-  }
-
-  // getMockCategories removed (unused)
 }

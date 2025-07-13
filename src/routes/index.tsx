@@ -1,4 +1,5 @@
 import { Link, createFileRoute } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import {
   Car,
   CheckCircle,
@@ -16,12 +17,32 @@ import {
 import { Button } from '@/components/ui/button'
 import { useModal } from '@/contexts/ModalContext'
 
+type HomePageSearch = {
+  openLogin?: boolean
+  openRegister?: boolean
+}
+
 export const Route = createFileRoute('/')({
+  validateSearch: (search: Record<string, unknown>): HomePageSearch => {
+    return {
+      openLogin: search.openLogin === true || search.openLogin === 'true',
+      openRegister: search.openRegister === true || search.openRegister === 'true',
+    }
+  },
   component: HomePage,
 })
 
 function HomePage() {
-  const { openRegister } = useModal()
+  const { openRegister, openLogin } = useModal()
+  const { openLogin: shouldOpenLogin, openRegister: shouldOpenRegister } = Route.useSearch()
+
+  useEffect(() => {
+    if (shouldOpenLogin) {
+      openLogin()
+    } else if (shouldOpenRegister) {
+      openRegister()
+    }
+  }, [shouldOpenLogin, shouldOpenRegister, openLogin, openRegister])
 
   return (
     <div className="min-h-screen bg-background">

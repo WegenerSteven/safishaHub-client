@@ -1,7 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from '@tanstack/react-router'
-import { AuthLayout } from '@/components/auth/AuthLayout'
-import { LoginForm } from '@/components/auth/LoginForm'
-import { useAuth } from '@/hooks/useAuth'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/login')({
   beforeLoad: () => {
@@ -11,41 +8,11 @@ export const Route = createFileRoute('/login')({
     if (isAuthenticated) {
       throw redirect({ to: '/dashboard' })
     }
+    
+    // Redirect to home page where user can access login modal
+    throw redirect({ 
+      to: '/',
+      search: { openLogin: true }
+    })
   },
-  component: RouteComponent,
 })
-
-function RouteComponent() {
-  const navigate = useNavigate()
-  const { login, googleLogin, isLoading, clearError } = useAuth()
-
-  const handleLogin = async (data: any) => {
-    try {
-      clearError()
-      await login(data)
-
-      // Redirect to dashboard - the dashboard component will handle the user type
-      navigate({ to: '/dashboard' })
-    } catch (error) {
-      // Error is already handled by useAuth hook with toast notification
-      console.error('Login error:', error)
-    }
-  }
-
-  const handleGoogleLogin = () => {
-    googleLogin()
-  }
-
-  return (
-    <AuthLayout
-      title="Welcome back"
-      subtitle="Sign in to your account or create a new one"
-    >
-      <LoginForm
-        onSubmit={handleLogin}
-        onGoogleLogin={handleGoogleLogin}
-        isLoading={isLoading}
-      />
-    </AuthLayout>
-  )
-}
