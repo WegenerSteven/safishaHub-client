@@ -109,11 +109,11 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
       icon: Calendar,
       current: location.pathname === '/dashboard/bookings',
     },
-     {
-      name: 'Services',
-      href: '/dashboard/services',
-      icon: Calendar,
-      current: location.pathname === '/dashboard/services',
+    {
+      name: 'Register Business',
+      href: '/dashboard/register-business',
+      icon: Car,
+      current: location.pathname === '/dashboard/register-business',
     },
     {
       name: 'Profile',
@@ -130,7 +130,7 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
   ]
 
   const navigation =
-    user.role === 'service_provider' ? providerNavItems : customerNavItems
+    user.role === 'SERVICE_PROVIDER' ? providerNavItems : customerNavItems
 
   return (
     <div className="min-h-screen bg-background flex">
