@@ -20,8 +20,8 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
-import { Route as ServiceProviderServicesRouteImport } from './routes/service-provider/services'
 import { Route as ServiceProviderBookingsRouteImport } from './routes/service-provider/bookings'
+import { Route as DashboardRegisterBusinessRouteImport } from './routes/dashboard/register-business'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
 import { Route as DashboardBookingsRouteImport } from './routes/dashboard/bookings'
 
@@ -81,16 +81,17 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   path: '/',
   getParentRoute: () => DashboardRoute,
 } as any)
-const ServiceProviderServicesRoute = ServiceProviderServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
-  getParentRoute: () => ServiceProviderRoute,
-} as any)
 const ServiceProviderBookingsRoute = ServiceProviderBookingsRouteImport.update({
   id: '/bookings',
   path: '/bookings',
   getParentRoute: () => ServiceProviderRoute,
 } as any)
+const DashboardRegisterBusinessRoute =
+  DashboardRegisterBusinessRouteImport.update({
+    id: '/register-business',
+    path: '/register-business',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 const DashboardProfileRoute = DashboardProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -115,8 +116,8 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/register-business': typeof DashboardRegisterBusinessRoute
   '/service-provider/bookings': typeof ServiceProviderBookingsRoute
-  '/service-provider/services': typeof ServiceProviderServicesRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -131,8 +132,8 @@ export interface FileRoutesByTo {
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/register-business': typeof DashboardRegisterBusinessRoute
   '/service-provider/bookings': typeof ServiceProviderBookingsRoute
-  '/service-provider/services': typeof ServiceProviderServicesRoute
   '/dashboard': typeof DashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -149,8 +150,8 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/register-business': typeof DashboardRegisterBusinessRoute
   '/service-provider/bookings': typeof ServiceProviderBookingsRoute
-  '/service-provider/services': typeof ServiceProviderServicesRoute
   '/dashboard/': typeof DashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -168,8 +169,8 @@ export interface FileRouteTypes {
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
+    | '/dashboard/register-business'
     | '/service-provider/bookings'
-    | '/service-provider/services'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -184,8 +185,8 @@ export interface FileRouteTypes {
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
+    | '/dashboard/register-business'
     | '/service-provider/bookings'
-    | '/service-provider/services'
     | '/dashboard'
   id:
     | '__root__'
@@ -201,8 +202,8 @@ export interface FileRouteTypes {
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
+    | '/dashboard/register-business'
     | '/service-provider/bookings'
-    | '/service-provider/services'
     | '/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -298,19 +299,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardIndexRouteImport
       parentRoute: typeof DashboardRoute
     }
-    '/service-provider/services': {
-      id: '/service-provider/services'
-      path: '/services'
-      fullPath: '/service-provider/services'
-      preLoaderRoute: typeof ServiceProviderServicesRouteImport
-      parentRoute: typeof ServiceProviderRoute
-    }
     '/service-provider/bookings': {
       id: '/service-provider/bookings'
       path: '/bookings'
       fullPath: '/service-provider/bookings'
       preLoaderRoute: typeof ServiceProviderBookingsRouteImport
       parentRoute: typeof ServiceProviderRoute
+    }
+    '/dashboard/register-business': {
+      id: '/dashboard/register-business'
+      path: '/register-business'
+      fullPath: '/dashboard/register-business'
+      preLoaderRoute: typeof DashboardRegisterBusinessRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/dashboard/profile': {
       id: '/dashboard/profile'
@@ -332,12 +333,14 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteChildren {
   DashboardBookingsRoute: typeof DashboardBookingsRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardRegisterBusinessRoute: typeof DashboardRegisterBusinessRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBookingsRoute: DashboardBookingsRoute,
   DashboardProfileRoute: DashboardProfileRoute,
+  DashboardRegisterBusinessRoute: DashboardRegisterBusinessRoute,
   DashboardIndexRoute: DashboardIndexRoute,
 }
 
@@ -347,12 +350,10 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 
 interface ServiceProviderRouteChildren {
   ServiceProviderBookingsRoute: typeof ServiceProviderBookingsRoute
-  ServiceProviderServicesRoute: typeof ServiceProviderServicesRoute
 }
 
 const ServiceProviderRouteChildren: ServiceProviderRouteChildren = {
   ServiceProviderBookingsRoute: ServiceProviderBookingsRoute,
-  ServiceProviderServicesRoute: ServiceProviderServicesRoute,
 }
 
 const ServiceProviderRouteWithChildren = ServiceProviderRoute._addFileChildren(
