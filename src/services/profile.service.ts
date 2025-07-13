@@ -11,29 +11,37 @@ import type { DashboardData } from '../interfaces/dashboard/dashboard.interface'
 export const profileService = {
   // Get user profile
   async getProfile(): Promise<ProfileResponse> {
-    const response = await api.get<ApiResponse<ProfileResponse>>('/users/profile');
+    const response = await api.get<ApiResponse<ProfileResponse>>('/auth/profile');
     return response.data;
   },
 
-  // Update user basic profile
+  // Update user profile (unified for all roles)
   async updateProfile(data: Partial<UserProfile>): Promise<UserProfile> {
     const response = await api.put<Partial<UserProfile>, ApiResponse<UserProfile>>('/users/profile', data);
     return response.data;
   },
 
-  // Update customer profile
+  // Update customer specific fields
   async updateCustomerProfile(data: Partial<CustomerProfile>): Promise<CustomerProfile> {
-    const response = await api.put<Partial<CustomerProfile>, ApiResponse<CustomerProfile>>('/customers/profile', data);
+    // Since we now have a unified users table, use the users endpoint
+    const response = await api.put<Partial<CustomerProfile>, ApiResponse<CustomerProfile>>('/users/profile', data);
     return response.data;
   },
 
-  // Update service provider profile
+  // Update service provider specific fields
   async updateServiceProviderProfile(data: Partial<ServiceProviderProfile>): Promise<ServiceProviderProfile> {
-    const response = await api.put<Partial<ServiceProviderProfile>, ApiResponse<ServiceProviderProfile>>('/service-provider/profile', data);
+    // Since we now have a unified users table, use the users endpoint
+    const response = await api.put<Partial<ServiceProviderProfile>, ApiResponse<ServiceProviderProfile>>('/users/profile', data);
     return response.data;
   },
 
-  // Get dashboard data
+  // Get service provider dashboard data
+  async getServiceProviderDashboard(): Promise<DashboardData> {
+    const response = await api.get<ApiResponse<DashboardData>>('/users/service-provider/dashboard');
+    return response.data;
+  },
+
+  // Get general dashboard data
   async getDashboardData(): Promise<DashboardData> {
     const response = await api.get<ApiResponse<DashboardData>>('/users/dashboard');
     return response.data;

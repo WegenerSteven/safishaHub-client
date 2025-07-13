@@ -3,6 +3,7 @@ import type { AxiosRequestConfig, AxiosResponse, AxiosInstance } from 'axios';
 import type { ApiResponse } from '../interfaces/api.interface';
 import type { LoginRequest, LoginResponse, User } from '../interfaces/auth/User.interface';
 import type { RegisterRequest } from '../interfaces/auth/User.interface';
+import type { AuthResponse } from '../interfaces/auth/AuthResponse.interface';
 
 class ApiService {
     private api: AxiosInstance;
@@ -114,32 +115,45 @@ class ApiService {
         };
     }
 
-    async register(userData: RegisterRequest): Promise<ApiResponse<User>> {
-        // Use the new role-based registration structure that matches backend DTO
+    async register(userData: RegisterRequest): Promise<AuthResponse> {
+        console.log('API.register called with userData:', userData);
+        let endpoint: string;
+        
+        // Use role-specific registration endpoints
+        if (userData.role === 'customer') {
+          endpoint = '/auth/register/customer';
+        } else if (userData.role === 'service_provider') {
+          endpoint = '/auth/register/service-provider';
+        } else {
+          throw new Error('Invalid role specified');
+        }
+
+        // Transform the frontend data to match backend DTOs
         const backendData = {
-            first_name: userData.first_name,
-            last_name: userData.last_name,
-            email: userData.email,
-            password: userData.password,
-            role: userData.role,
-            ...(userData.phone && { phone: userData.phone }),
-            ...(userData.customer_data && { customer_data: userData.customer_data }),
-            ...(userData.provider_data && { provider_data: userData.provider_data }),
+          first_name: userData.first_name,
+          last_name: userData.last_name,
+          email: userData.email,
+          password: userData.password,
+          ...(userData.phone && { phone: userData.phone }),
         };
+
+        console.log('API.register - Final endpoint:', endpoint);
+        console.log('API.register - Final backendData:', backendData);
+        const response = await this.post<typeof backendData, any>(endpoint, backendData);
         
-        const response = await this.post<typeof backendData, any>('/users/register', backendData);
-        
-        // Handle the backend response structure: { user, tokens, message }
-        if (response.tokens?.accessToken) {
-            this.setToken(response.tokens.accessToken);
-            localStorage.setItem('user_data', JSON.stringify(response.user));
+        // Handle the backend response structure: { user, accessToken, refreshToken, message }
+        if (response.accessToken) {
+          this.setToken(response.accessToken);
+          localStorage.setItem('user_data', JSON.stringify(response.user));
+          localStorage.setItem('refresh_token', response.refreshToken);
         }
         
         return {
-            data: response.user,
-            message: response.message
+          user: response.user,
+          accessToken: response.accessToken,
+          refreshToken: response.refreshToken,
         };
-    }
+      }
 
     async logout(): Promise<void> {
         try {
