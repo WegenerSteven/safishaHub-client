@@ -104,10 +104,16 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
       current: location.pathname === '/dashboard',
     },
     {
-      name: 'Bookings',
+      name: 'My Bookings',
       href: '/dashboard/bookings',
       icon: Calendar,
       current: location.pathname === '/dashboard/bookings',
+    },
+    {
+      name: 'Provider Bookings',
+      href: '/dashboard/provider-bookings',
+      icon: Calendar,
+      current: location.pathname === '/dashboard/provider-bookings',
     },
     {
       name: 'Register Business',

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { serviceManagementService, Service, ServiceCategory } from '@/services/service-management.service';
+import type { serviceManagementService, Service, ServiceCategory } from '@/services/service-management.service';
 import {
   Card,
   CardContent,
