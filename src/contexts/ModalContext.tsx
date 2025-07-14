@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 
 interface ModalContextType {
   isLoginOpen: boolean
@@ -26,6 +26,31 @@ export function useModal() {
 export function ModalProvider({ children }: { children: React.ReactNode }) {
   const [isLoginOpen, setIsLoginOpen] = useState(false)
   const [isRegisterOpen, setIsRegisterOpen] = useState(false)
+
+  // Listen for auth change events and login requests
+  useEffect(() => {
+    const handleAuthChange = () => {
+      console.log('ModalContext: Auth change event received, closing modals');
+      // Close both login and registration modals when auth state changes
+      setIsLoginOpen(false)
+      setIsRegisterOpen(false)
+    }
+
+    const handleLoginRequest = () => {
+      console.log('ModalContext: Login request event received, opening login modal');
+      // Open login modal when login is requested
+      setIsRegisterOpen(false)
+      setIsLoginOpen(true)
+    }
+
+    window.addEventListener('auth-change', handleAuthChange)
+    window.addEventListener('request-login', handleLoginRequest)
+
+    return () => {
+      window.removeEventListener('auth-change', handleAuthChange)
+      window.removeEventListener('request-login', handleLoginRequest)
+    }
+  }, [])
 
   const openLogin = () => {
     setIsRegisterOpen(false)
