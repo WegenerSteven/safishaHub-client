@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { authService } from '@/services/auth.service'
+import { useAuth } from '@/contexts/auth-context'
 import type { RegisterRequest } from '@/interfaces/auth/User.interface'
 import { useModal } from '@/contexts/ModalContext'
 
@@ -41,6 +41,7 @@ export function RegisterForm({
   isLoading = false,
 }: RegisterFormProps) {
   const { openLogin } = useModal()
+  const { register } = useAuth()
   const [showPassword, setShowPassword] = React.useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false)
 
@@ -61,7 +62,7 @@ export function RegisterForm({
         // Default implementation using auth service
         try {
           console.log('Form submission - Form values:', value);
-          
+
           const registerData: RegisterRequest = {
             first_name: value.firstName,
             last_name: value.lastName,
@@ -69,11 +70,11 @@ export function RegisterForm({
             password: value.password,
             role: value.accountType,
           }
-          
+
           console.log('Form submission - RegisterRequest data:', registerData);
 
           console.log('Form submission - Final data to send:', registerData);
-          await authService.register(registerData)
+          await register(registerData)
           onSuccess?.()
         } catch (error: any) {
           console.error('Registration failed:', error)
@@ -146,7 +147,7 @@ export function RegisterForm({
                     onBlur={field.handleBlur}
                     className={
                       field.state.meta.errors.length > 0 &&
-                      field.state.meta.isTouched
+                        field.state.meta.isTouched
                         ? 'border-red-500'
                         : ''
                     }
@@ -192,7 +193,7 @@ export function RegisterForm({
                     onBlur={field.handleBlur}
                     className={
                       field.state.meta.errors.length > 0 &&
-                      field.state.meta.isTouched
+                        field.state.meta.isTouched
                         ? 'border-red-500'
                         : ''
                     }
@@ -240,7 +241,7 @@ export function RegisterForm({
                   onBlur={field.handleBlur}
                   className={
                     field.state.meta.errors.length > 0 &&
-                    field.state.meta.isTouched
+                      field.state.meta.isTouched
                       ? 'border-red-500'
                       : ''
                   }

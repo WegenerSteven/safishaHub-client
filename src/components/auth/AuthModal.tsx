@@ -18,9 +18,8 @@ export function AuthModal() {
 
   const handleSuccess = () => {
     closeAll()
-    // Trigger auth state update
-    window.dispatchEvent(new CustomEvent('auth-change'))
-    // Navigate to dashboard
+    // Don't dispatch auth-change here as it's already handled in auth-context
+    // Navigate to dashboard after modal is closed
     navigate({ to: '/dashboard' })
   }
 

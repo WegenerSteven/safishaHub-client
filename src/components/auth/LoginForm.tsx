@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { authService } from '@/services/auth.service'
+import { useAuth } from '@/contexts/auth-context'
 import { useModal } from '@/contexts/ModalContext'
 
 interface LoginFormData {
@@ -30,6 +30,7 @@ export function LoginForm({
 }: LoginFormProps) {
   const [showPassword, setShowPassword] = React.useState(false)
   const { openRegister } = useModal()
+  const { login } = useAuth()
 
   const form = useForm({
     defaultValues: {
@@ -41,12 +42,9 @@ export function LoginForm({
       if (onSubmit) {
         await onSubmit(value)
       } else {
-        // Default implementation using auth service
+        // Default implementation using auth context
         try {
-          await authService.login({
-            email: value.email,
-            password: value.password,
-          })
+          await login(value.email, value.password)
           onSuccess?.()
         } catch (error) {
           console.error('Login failed:', error)
@@ -112,7 +110,7 @@ export function LoginForm({
                   onBlur={field.handleBlur}
                   className={
                     field.state.meta.errors.length > 0 &&
-                    field.state.meta.isTouched
+                      field.state.meta.isTouched
                       ? 'border-red-500'
                       : ''
                   }
