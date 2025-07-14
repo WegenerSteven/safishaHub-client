@@ -107,7 +107,7 @@ export function ServiceProviderNav() {
 function NavLinks({ onNavClick }: { onNavClick?: () => void } = {}) {
   const dashboardMatch = !!useMatch({ to: '/service-provider-dashboard' })
   const servicesMatch = !!useMatch({ to: '/service-provider/services' }) 
-  const bookingsMatch = !!useMatch({ to: '/service-provider/bookings' })
+  const bookingsMatch = !!useMatch({ to: '/dashboard/provider-bookings' })
   const schedulingMatch = !!useMatch({ to: '/service-provider/availability' })
   const analyticsMatch = !!useMatch({ to: '/service-provider/analytics' })
   const profileMatch = !!useMatch({ to: '/service-provider/profile' })
@@ -130,7 +130,7 @@ function NavLinks({ onNavClick }: { onNavClick?: () => void } = {}) {
         onClick={onNavClick}
       />
       <NavLink 
-        to="/service-provider/bookings" 
+        to="/dashboard/provider-bookings" 
         icon={<ClipboardList className="h-5 w-5" />}
         label="Bookings"
         isActive={bookingsMatch}
