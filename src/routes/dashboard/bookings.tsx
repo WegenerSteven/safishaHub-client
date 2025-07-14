@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Calendar, Car, DollarSign, MapPin, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
@@ -10,9 +10,10 @@ export const Route = createFileRoute('/dashboard/bookings')({
 })
 
 function BookingsPage() {
-  const [bookings, setBookings] = useState<Booking[]>([]) // Ensure it's initialized as an empty array
+  const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   useEffect(() => {
     loadBookings()
@@ -22,14 +23,14 @@ function BookingsPage() {
     try {
       setLoading(true)
       setError(null)
-      
+
       console.log('Attempting to load bookings from API...')
-      
+
       // Try to load user bookings from API
       const userBookings = await bookingsService.getMyBookings()
-      
+
       console.log('API response:', userBookings)
-      
+
       // Ensure we have an array
       if (Array.isArray(userBookings)) {
         setBookings(userBookings)
@@ -41,7 +42,7 @@ function BookingsPage() {
       }
     } catch (err: any) {
       console.error('Failed to load bookings:', err)
-      
+
       // More specific error messaging
       let errorMessage = 'Failed to load bookings. '
       if (err?.response?.status === 404) {
@@ -57,7 +58,7 @@ function BookingsPage() {
         errorMessage += 'Please try again later.'
         setBookings([])
       }
-      
+
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -100,18 +101,18 @@ function BookingsPage() {
     try {
       const reason = prompt('Please provide a reason for cancellation (optional):')
       if (reason === null) return // User cancelled the prompt
-      
+
       setLoading(true)
-      await bookingsService.cancelBooking(bookingId, reason || undefined)
-      
+      await bookingsService.cancelBooking(bookingId)
+
       // Show success message
       console.log('Booking cancelled successfully')
-      
+
       // Reload bookings to get updated data
       await loadBookings()
     } catch (err: any) {
       console.error('Failed to cancel booking:', err)
-      
+
       let errorMessage = 'Failed to cancel booking. '
       if (err?.response?.status === 404) {
         errorMessage += 'Booking not found.'
@@ -120,7 +121,7 @@ function BookingsPage() {
       } else {
         errorMessage += 'Please try again.'
       }
-      
+
       setError(errorMessage)
     } finally {
       setLoading(false)
@@ -142,10 +143,9 @@ function BookingsPage() {
   }
 
   const handleCreateBooking = () => {
-    // Navigate to create booking page
-    console.log('Create new booking')
-    // TODO: Implement navigation to create booking page
-    alert('Create booking functionality will be implemented soon')
+    // Navigate to services page to browse and book services
+    console.log('Navigating to services page')
+    navigate({ to: '/services' })
   }
 
   if (loading) {
@@ -169,7 +169,7 @@ function BookingsPage() {
           <h1 className="text-2xl font-bold text-gray-900">My Bookings</h1>
           <p className="text-gray-600">Manage your car wash appointments</p>
         </div>
-        <Button 
+        <Button
           onClick={handleCreateBooking}
           className="bg-blue-600 hover:bg-blue-700"
         >
@@ -183,7 +183,7 @@ function BookingsPage() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <div className="text-red-600">
             <p>{error}</p>
-            <Button 
+            <Button
               onClick={loadBookings}
               className="mt-2 bg-red-600 hover:bg-red-700"
               size="sm"
@@ -203,16 +203,16 @@ function BookingsPage() {
               {!Array.isArray(bookings) ? 'Error loading bookings' : 'No bookings found'}
             </h3>
             <p className="text-gray-600 mb-4">
-              {!Array.isArray(bookings) 
-                ? 'There was an issue loading your bookings. Please try again.' 
+              {!Array.isArray(bookings)
+                ? 'There was an issue loading your bookings. Please try again.'
                 : 'You haven\'t made any bookings yet.'
               }
             </p>
-            <Button 
+            <Button
               onClick={!Array.isArray(bookings) ? loadBookings : handleCreateBooking}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              {!Array.isArray(bookings) ? 'Retry' : 'Book Your First Service'}
+              {!Array.isArray(bookings) ? 'Retry' : 'Browse and Book Services'}
             </Button>
           </div>
         ) : (
@@ -226,7 +226,7 @@ function BookingsPage() {
                   <div className="flex items-center space-x-3 mb-3">
                     <Car className="h-5 w-5 text-blue-600" />
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {booking.service.name}
+                      {booking.service?.name || 'Service Name Not Available'}
                     </h3>
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(booking.status)}`}
@@ -239,20 +239,20 @@ function BookingsPage() {
                     <div className="flex items-center space-x-2">
                       <Calendar className="h-4 w-4" />
                       <span>
-                        {formatDate(booking.scheduledDate)} at {booking.scheduledTime}
+                        {booking.scheduledDate ? formatDate(booking.scheduledDate) : formatDate(booking.service_date)} at {booking.scheduledTime || booking.service_time}
                       </span>
                     </div>
 
-                    {booking.location && (
+                    {(booking as any).location && (
                       <div className="flex items-center space-x-2">
                         <MapPin className="h-4 w-4" />
-                        <span>{booking.location.address}</span>
+                        <span>{(booking as any).location.address}</span>
                       </div>
                     )}
 
                     <div className="flex items-center space-x-2">
                       <DollarSign className="h-4 w-4" />
-                      <span>{formatPrice(booking.totalAmount)}</span>
+                      <span>{formatPrice(booking.totalAmount ?? booking.total_amount)}</span>
                     </div>
                   </div>
 
@@ -293,9 +293,9 @@ function BookingsPage() {
                       </Button>
                     </>
                   )}
-                  <Button 
+                  <Button
                     onClick={() => handleViewDetails(booking.id)}
-                    variant="outline" 
+                    variant="outline"
                     size="sm"
                   >
                     View Details

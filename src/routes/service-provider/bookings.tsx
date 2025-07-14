@@ -1,6 +1,5 @@
-import { createFileRoute } from '@tanstack/react-router';
-import { BookingManagement } from '@/components/service-provider/BookingManagement';
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/service-provider/bookings')({
-  component: BookingManagement,
+  component: () => <Navigate to="/dashboard/provider-bookings" />,
 });

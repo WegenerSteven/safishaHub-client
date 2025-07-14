@@ -88,10 +88,24 @@ export class BookingsService {
    */
   async getMyBookings(): Promise<Booking[]> {
     try {
+      console.log('Fetching user bookings');
+      
       // First try the user-specific endpoint, fallback to filtering all bookings
       try {
-        return await apiService.get<Booking[]>('/bookings/my-bookings');
+        const response = await apiService.get<Booking[] | { data: Booking[] }>('/bookings/my-bookings');
+        console.log('API response for user bookings:', response);
+        
+        // Handle both array and object with data property responses
+        if (Array.isArray(response)) {
+          return response;
+        } else if (response && typeof response === 'object' && 'data' in response && Array.isArray(response.data)) {
+          return response.data;
+        } else {
+          console.warn('Unexpected response format for user bookings:', response);
+          return []; // Return empty array instead of throwing
+        }
       } catch (error: any) {
+        console.warn('Error fetching from my-bookings endpoint:', error?.response?.status, error?.message);
         if (error?.response?.status === 404) {
           // Endpoint doesn't exist, try getting all and filtering client-side
           console.log('User bookings endpoint not found, getting all bookings');
@@ -102,7 +116,7 @@ export class BookingsService {
       }
     } catch (error) {
       console.error('Failed to fetch user bookings:', error);
-      throw error;
+      return []; // Return empty array instead of throwing to prevent UI crashes
     }
   }
 
@@ -146,7 +160,24 @@ export class BookingsService {
    */
   async createBooking(bookingData: CreateBookingRequest): Promise<Booking> {
     try {
-      return await apiService.post<CreateBookingRequest, Booking>('/bookings', bookingData);
+      console.log('Creating booking with data:', JSON.stringify(bookingData));
+      
+      // Ensure all required fields are present
+      if (!bookingData.service_id) {
+        throw new Error('Service ID is required');
+      }
+      
+      if (!bookingData.service_date) {
+        throw new Error('Service date is required');
+      }
+      
+      if (!bookingData.service_time) {
+        throw new Error('Service time is required');
+      }
+      
+      const response = await apiService.post<CreateBookingRequest, Booking>('/bookings', bookingData);
+      console.log('Booking created successfully:', response);
+      return response;
     } catch (error) {
       console.error('Failed to create booking:', error);
       throw error;
