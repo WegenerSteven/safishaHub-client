@@ -10,6 +10,7 @@ import Header from '../components/Header'
 import { ModalProvider } from '../contexts/ModalContext'
 import { ThemeProvider } from '../components/theme/theme-provider'
 import { Toaster } from 'react-hot-toast'
+import { AuthProvider } from '../contexts/auth-context'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
@@ -57,21 +58,23 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         disableTransitionOnChange
       >
         <ModalProvider>
-          <Header />
-          <Outlet />
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              duration: 3000,
-              style: {
-                background: 'var(--background)',
-                color: 'var(--foreground)',
-                border: '1px solid var(--border)',
-              },
-            }}
-          />
-          <TanStackRouterDevtools />
-          <TanStackQueryLayout />
+          <AuthProvider>
+            <Header />
+            <Outlet />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 3000,
+                style: {
+                  background: 'var(--background)',
+                  color: 'var(--foreground)',
+                  border: '1px solid var(--border)',
+                },
+              }}
+            />
+            <TanStackRouterDevtools />
+            <TanStackQueryLayout />
+          </AuthProvider>
         </ModalProvider>
       </ThemeProvider>
     </RootDocument>
