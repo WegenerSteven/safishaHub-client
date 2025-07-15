@@ -21,7 +21,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import bookingsService from '@/services/bookings.service.instance'
-import { Calendar, Clock, Check, X, MoreHorizontal, AlertCircle, PhoneCall, Mail } from 'lucide-react'
+import { Calendar, Clock, Check, MoreHorizontal, AlertCircle, PhoneCall, Mail } from 'lucide-react'
 import { 
   DropdownMenu, 
   DropdownMenuContent, 
