@@ -1,0 +1,464 @@
+/* Dark mode fixes for components that don't properly respond to theme changes */
+
+/* Improve text readability in dark mode */
+.dark {
+  --text-opacity: 0.92;
+  --card-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Fix for team section cards in home page */
+.dark .bg-white {
+  background-color: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+}
+
+.dark .bg-gray-50,
+.dark .bg-gray-100,
+.dark .bg-blue-50 {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+/* Fix for text colors in various pages */
+.dark .text-gray-900 {
+  color: hsl(var(--foreground));
+}
+
+.dark .text-gray-800 {
+  color: hsl(var(--foreground));
+}
+
+.dark .text-gray-700 {
+  color: hsl(var(--card-foreground));
+}
+
+.dark .text-gray-600 {
+  color: hsl(var(--muted-foreground));
+}
+
+.dark .text-gray-500 {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Fix for section backgrounds */
+.dark section.bg-white,
+.dark div.bg-white,
+.dark .min-h-screen.bg-white {
+  background-color: hsl(var(--background));
+}
+
+.dark .from-blue-50.via-white.to-blue-50,
+.dark .from-blue-50.via-background.to-blue-50 {
+  background: linear-gradient(
+    to bottom right,
+    hsla(var(--background), 0.8) 0%,
+    hsla(var(--card), 0.9) 50%,
+    hsla(var(--background), 0.8) 100%
+  );
+}
+
+.dark .bg-gradient-to-br.from-blue-50.via-white.to-blue-50 {
+  background: linear-gradient(
+    to bottom right,
+    hsla(var(--card), 0.6) 0%,
+    hsla(var(--background), 0.8) 50%,
+    hsla(var(--card), 0.6) 100%
+  );
+}
+
+/* Fix for icon backgrounds */
+.dark .bg-blue-100 {
+  background-color: hsl(var(--accent));
+}
+
+.dark .bg-blue-600 {
+  background-color: hsl(var(--primary));
+}
+
+.dark .text-blue-600 {
+  color: hsl(var(--primary-foreground));
+}
+
+/* Fix for dashboard components */
+.dark .animate-spin {
+  border-color: hsl(var(--primary));
+}
+
+/* Improve table contrast in dark mode */
+.dark table {
+  --tw-border-opacity: 0.15;
+}
+
+/* Fix specific text contrast issues in forms */
+.dark label,
+.dark input::placeholder {
+  opacity: 0.85;
+}
+
+/* Fix font rendering for certain elements in dark mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark p,
+.dark span,
+.dark li,
+.dark a {
+  letter-spacing: 0.01em;
+}
+
+/* Improve toast contrast in dark mode */
+.dark .dark-toast {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+/* Fix status indicators that might use hardcoded colors */
+.dark .text-green-600 {
+  color: hsl(142.1 70.6% 45.3%); /* Emerald 500 */
+}
+
+.dark .text-orange-600,
+.dark .text-amber-600 {
+  color: hsl(43 96.4% 56.3%); /* Amber 400 */
+}
+
+.dark .text-red-600,
+.dark .text-rose-600 {
+  color: hsl(346.8 77.2% 49.8%); /* Rose 500 */
+}
+
+/* Improve card and popover shadows for dark mode */
+.dark .card,
+.dark .popover {
+  box-shadow: var(--card-shadow);
+}
+
+/* Ensure proper font rendering in modals and dropdowns */
+.dark [role='dialog'],
+.dark [role='listbox'],
+.dark [role='menu'] {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix for team section images */
+.dark img {
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* Fix for fleet page */
+.dark .min-h-screen.bg-gray-50 {
+  background-color: hsl(var(--background));
+}
+
+/* Fix for fleet page item backgrounds */
+.dark .flex-shrink-0.w-6.h-6.bg-blue-600 {
+  background-color: hsl(var(--primary));
+}
+
+/* Fix for contact page */
+.dark .flex-shrink-0.w-12.h-12.bg-blue-100 {
+  background-color: hsl(var(--accent));
+}
+
+/* Fix for shadows in dark mode */
+.dark .shadow-sm,
+.dark .shadow,
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
+/* Improved buttons in dark mode */
+.dark button,
+.dark .btn,
+.dark [type='button'],
+.dark [type='submit'] {
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.dark button:hover,
+.dark .btn:hover,
+.dark [type='button']:hover,
+.dark [type='submit']:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Improved button outlines and variants */
+.dark button[class*='outline'],
+.dark .btn[class*='outline'] {
+  border-color: hsl(var(--border));
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.dark button[class*='outline']:hover,
+.dark .btn[class*='outline']:hover {
+  border-color: hsl(var(--primary));
+  background-color: hsla(var(--primary), 0.1);
+}
+
+/* Improved focus states */
+.dark button:focus,
+.dark .btn:focus,
+.dark [type='button']:focus,
+.dark [type='submit']:focus,
+.dark select:focus,
+.dark input:focus,
+.dark textarea:focus {
+  outline: 2px solid hsla(var(--ring), 0.5);
+  outline-offset: 2px;
+}
+
+/* Fix for forms in dark mode */
+.dark form input,
+.dark form textarea,
+.dark form select {
+  background-color: hsl(var(--input));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+  transition: all 0.2s ease;
+}
+
+.dark form input:hover,
+.dark form textarea:hover,
+.dark form select:hover {
+  border-color: hsla(var(--ring), 0.6);
+}
+
+.dark form input:focus,
+.dark form textarea:focus,
+.dark form select:focus {
+  border-color: hsl(var(--ring));
+  background-color: hsla(var(--background), 0.8);
+}
+
+/* Improved select dropdowns */
+.dark select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, currentColor 50%),
+    linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px);
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+}
+
+.dark select option {
+  background-color: hsl(var(--popover));
+  color: hsl(var(--popover-foreground));
+  padding: 8px;
+}
+
+/* Hover effects for cards */
+.dark .card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-color: hsla(var(--border), 0.7);
+}
+
+/* Enhanced dark mode UI component styles */
+
+/* Improved button variants in dark mode */
+.dark .btn-primary,
+.dark button[class*='primary'],
+.dark [data-variant='default'] {
+  position: relative;
+  overflow: hidden;
+}
+
+.dark .btn-primary::before,
+.dark button[class*='primary']::before,
+.dark [data-variant='default']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    hsla(var(--primary), 0) 0%,
+    hsla(var(--primary), 0.2) 50%,
+    hsla(var(--primary), 0) 100%
+  );
+  transition: left 0.8s ease;
+}
+
+.dark .btn-primary:hover::before,
+.dark button[class*='primary']:hover::before,
+.dark [data-variant='default']:hover::before {
+  left: 100%;
+}
+
+/* Improved select dropdown styling in dark mode */
+.dark [data-slot='select-content'] {
+  background-color: hsl(var(--popover));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  animation: selectDropIn 0.2s ease-out;
+}
+
+@keyframes selectDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dark [data-slot='select-item'] {
+  transition: all 0.15s ease;
+}
+
+.dark [data-slot='select-item'][data-highlighted='true'] {
+  background-color: hsla(var(--accent), 0.8);
+  color: hsl(var(--accent-foreground));
+}
+
+/* Improved dropdown menus in dark mode */
+.dark [role='menu'],
+.dark [data-slot='dropdown-menu-content'] {
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--popover));
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(2px);
+}
+
+.dark [role='menuitem'],
+.dark [data-slot='dropdown-menu-item'] {
+  transition: all 0.2s ease;
+}
+
+.dark [role='menuitem']:hover,
+.dark [data-slot='dropdown-menu-item']:hover {
+  background-color: hsla(var(--accent), 0.7);
+  color: hsl(var(--accent-foreground));
+}
+
+/* Improved card styles */
+.dark [data-slot='card'] {
+  border: 1px solid hsla(var(--border), 0.7);
+  background-color: hsl(var(--card));
+  transition: all 0.3s ease;
+}
+
+.dark [data-slot='card']:hover {
+  border-color: hsla(var(--border), 1);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.25);
+}
+
+/* Improved dialog/modal styles */
+.dark [role='dialog'],
+.dark [data-slot='dialog-content'] {
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--background));
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  animation: dialogIn 0.3s ease-out;
+}
+
+@keyframes dialogIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Enhanced tab styles */
+.dark [data-slot='tabs-list'] {
+  border-bottom-color: hsla(var(--border), 0.6);
+}
+
+.dark [data-slot='tabs-trigger'] {
+  transition: all 0.2s ease;
+}
+
+.dark [data-slot='tabs-trigger'][data-state='active'] {
+  color: hsl(var(--primary));
+  border-bottom-color: hsl(var(--primary));
+  font-weight: 500;
+}
+
+.dark [data-slot='tabs-trigger']:hover:not([data-state='active']) {
+  color: hsl(var(--foreground));
+  background-color: hsla(var(--muted), 0.3);
+}
+
+/* Improved link hover effects */
+.dark
+  a:not([class*='button']):not([role='tab']):not([data-slot='tabs-trigger']) {
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.dark
+  a:not([class*='button']):not([role='tab']):not(
+    [data-slot='tabs-trigger']
+  ):hover {
+  color: hsl(var(--primary));
+  border-bottom-color: hsla(var(--primary), 0.5);
+}
+
+/* Input focus effects */
+.dark input:focus,
+.dark textarea:focus,
+.dark [data-slot='input']:focus-within,
+.dark [data-slot='textarea']:focus-within {
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 1px hsla(var(--ring), 0.3);
+}
+
+/* Toast/notification improvements */
+.dark [role='status'],
+.dark [data-slot='toast'] {
+  border: 1px solid hsla(var(--border), 0.6);
+  background-color: hsl(var(--background));
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+}
+
+/* Enhanced slider controls */
+.dark [data-slot='slider-thumb'] {
+  background-color: hsl(var(--primary));
+  border: 2px solid hsl(var(--background));
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.dark [data-slot='slider-thumb']:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.dark [data-slot='slider-track'] {
+  height: 6px;
+  border-radius: 3px;
+  background-color: hsla(var(--muted), 0.5);
+}
+
+.dark [data-slot='slider-range'] {
+  background-color: hsl(var(--primary));
+}
