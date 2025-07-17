@@ -1,5 +1,4 @@
 import type { Booking } from '../booking/Booking.interface';
-
 export interface DashboardData {
   user: {
     id: string;
@@ -13,6 +12,12 @@ export interface DashboardData {
     loyaltyTier?: string;
     loyaltyPoints?: number;
     totalServices?: number;
+    activeServices?: number;
+    totalEarnings?: number;
+    pendingBookings?: number;
+    completedBookings?: number;
+    monthlyEarnings?: number;
+
     rating?: number;
     isVerified?: boolean;
     businessName?: string;
@@ -26,3 +31,19 @@ export interface DashboardData {
     bookingCount: number;
   }[];
 }
+// export interface ServiceProviderDashboardStats{
+//   totalServices: number;
+//   activeServices: number;
+//   totalBookings: number;
+//   pendingBookings: number;
+//   completedBookings: number;
+//   totalEarnings: number;
+//   monthlyEarnings: number;
+//   rating: number;
+//   recentBookings: Booking[];
+// }
+
+// export interface ExtendedBooking extends Booking {
+//   user?: User;
+//   service?: Service;
+// }

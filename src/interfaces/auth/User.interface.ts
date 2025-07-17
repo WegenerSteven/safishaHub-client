@@ -3,7 +3,7 @@ export interface User {
     email: string;
     first_name: string;
     last_name: string;
-    role: 'CUSTOMER' | 'SERVICE_PROVIDER' | 'ADMIN';
+    role: 'customer' | 'service_provider' | 'admin';
     phone?: string;
     is_active: boolean;
     is_verified?: boolean;
@@ -46,7 +46,7 @@ export interface User {
     years_of_experience?: number;
     
     // Legacy compatibility
-    name?: string; // Computed from first_name + last_name
+    name?: string; // Computed from firstName + lastName
     firstName?: string; // Alias for first_name
     lastName?: string; // Alias for last_name
     isEmailVerified?: boolean; // Alias for email_verified_at check

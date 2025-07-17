@@ -3,9 +3,8 @@ import type { User } from '../auth/User.interface';
 
 export interface Service {
   id: string;
-  provider_id: string;
+  business_id: string;
   category_id: string;
-  business_id?: string;
   location_id?: string;
   name: string;
   description?: string;
@@ -19,6 +18,7 @@ export interface Service {
   vehicle_type: VehicleType; // API returns single vehicle_type
   vehicle_types?: VehicleType[]; // For backward compatibility
   status: ServiceStatus;
+  category?: ServiceCategory;
   is_active: boolean;
   is_available: boolean;
   images?: string[];
@@ -102,7 +102,7 @@ export enum PricingType {
 
 // DTOs for API requests
 export interface CreateServiceRequest {
-  provider_id: string;
+  business_id: string;
   category_id: string;
   location_id?: string;
   name: string;
@@ -134,7 +134,7 @@ export interface ServiceFilterParams {
   max_price?: number;
   status?: ServiceStatus;
   is_available?: boolean;
-  provider_id?: string;
+  business_id?: string;
   search?: string;
   page?: number;
   limit?: number;
