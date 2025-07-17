@@ -10,7 +10,7 @@ import { businessService } from '@/services';
 import { useNavigate } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 // Utility to upload business image and return its URL
 async function uploadBusinessImage(file: File): Promise<string> {
