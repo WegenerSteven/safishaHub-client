@@ -171,7 +171,7 @@ export function ServiceManagement() {
       description: service.description,
       short_description: service.short_description || '',
       category_id: service.category_id,
-      service_type: service.service_type,    
+      service_type: service.service_type,
       price: service.price || Number(service.base_price),
       duration_minutes: service.duration_minutes || 30,
       vehicle_type: service.vehicle_type || VehicleType.SEDAN,

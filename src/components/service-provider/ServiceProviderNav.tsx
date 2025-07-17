@@ -26,7 +26,7 @@ interface NavLinkProps {
 export function ServiceProviderNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
-  
+
   const handleLogout = async () => {
     try {
       await authService.logout()
@@ -35,7 +35,7 @@ export function ServiceProviderNav() {
       console.error('Logout failed:', error)
     }
   }
-  
+
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
   }
@@ -60,9 +60,8 @@ export function ServiceProviderNav() {
 
       {/* Mobile Navigation Menu */}
       <div
-        className={`lg:hidden fixed top-0 left-0 right-0 bottom-0 bg-background z-40 transform transition-transform duration-300 ${
-          isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`lg:hidden fixed top-0 left-0 right-0 bottom-0 bg-background z-40 transform transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="p-6 pt-16">
           <div className="space-y-4">
@@ -105,65 +104,73 @@ export function ServiceProviderNav() {
 }
 
 function NavLinks({ onNavClick }: { onNavClick?: () => void } = {}) {
-  const dashboardMatch = !!useMatch({ to: '/service-provider-dashboard' })
-  const servicesMatch = !!useMatch({ to: '/service-provider/services' }) 
-  const bookingsMatch = !!useMatch({ to: '/dashboard/provider-bookings' })
-  const schedulingMatch = !!useMatch({ to: '/service-provider/availability' })
-  const analyticsMatch = !!useMatch({ to: '/service-provider/analytics' })
-  const profileMatch = !!useMatch({ to: '/service-provider/profile' })
-  const settingsMatch = !!useMatch({ to: '/service-provider/settings' })
-  
+  const dashboardMatch = !!useMatch({ from: '/dashboard' })
+  const businessRegisterMatch = !!useMatch({ from: '/dashboard/business/register' })
+  const serviceManageMatch = !!useMatch({ from: '/dashboard/services/manage' })
+  const bookingsMatch = !!useMatch({ from: '/dashboard/provider-bookings' })
+  // const schedulingMatch = !!useMatch({ from: '/service-provider/availability' })
+  // const analyticsMatch = !!useMatch({ from: '/service-provider/analytics' })
+  const profileMatch = !!useMatch({ from: '/dashboard/profile' })
+  // const settingsMatch = !!useMatch({ from: '/service-provider/settings' })
+
   return (
     <nav className="space-y-1">
-      <NavLink 
-        to="/service-provider-dashboard" 
+      <NavLink
+        to="/service-provider-dashboard"
         icon={<LayoutDashboard className="h-5 w-5" />}
         label="Dashboard"
         isActive={dashboardMatch}
         onClick={onNavClick}
       />
-      <NavLink 
-        to="/service-provider/services" 
-        icon={<Car className="h-5 w-5" />}
-        label="Services"
-        isActive={servicesMatch}
+      <NavLink
+        to="/dashboard/business/register"
+        icon={<Settings className="h-5 w-5" />}
+        label="Business Profile"
+        isActive={businessRegisterMatch}
         onClick={onNavClick}
       />
-      <NavLink 
-        to="/dashboard/provider-bookings" 
+      <NavLink
+        to="/dashboard/services/manage"
+        icon={<Car className="h-5 w-5" />}
+        label="Manage Services"
+        isActive={serviceManageMatch}
+        onClick={onNavClick}
+      />
+      <NavLink
+        to="/dashboard/provider-bookings"
         icon={<ClipboardList className="h-5 w-5" />}
         label="Bookings"
         isActive={bookingsMatch}
         onClick={onNavClick}
       />
-      <NavLink 
-        to="/service-provider/availability" 
+      {/* <NavLink
+        to="/service-provider/availability"
         icon={<Calendar className="h-5 w-5" />}
         label="Availability"
         isActive={schedulingMatch}
         onClick={onNavClick}
-      />
-      <NavLink 
-        to="/service-provider/analytics" 
+      /> */}
+      {/* <NavLink
+        to="/service-provider/analytics"
         icon={<BarChart3 className="h-5 w-5" />}
         label="Analytics"
         isActive={analyticsMatch}
         onClick={onNavClick}
-      />
-      <NavLink 
-        to="/service-provider/profile" 
+      /> */}
+      <NavLink
+        to="/dashboard/profile"
         icon={<User className="h-5 w-5" />}
         label="Profile"
         isActive={profileMatch}
         onClick={onNavClick}
       />
-      <NavLink 
-        to="/service-provider/settings" 
+      {/* <NavLink
+        to="/service-provider/settings"
         icon={<Settings className="h-5 w-5" />}
         label="Settings"
         isActive={settingsMatch}
         onClick={onNavClick}
-      />
+      /> */}
     </nav>
   )
 }
@@ -176,11 +183,10 @@ function NavLink({ to, icon, label, isActive, onClick }: NavLinkProps) {
         className: 'bg-muted font-medium text-primary'
       }}
       onClick={onClick}
-      className={`flex items-center px-4 py-2 rounded-md transition-colors ${
-        isActive 
-          ? 'bg-muted font-medium text-primary' 
+      className={`flex items-center px-4 py-2 rounded-md transition-colors ${isActive
+          ? 'bg-muted font-medium text-primary'
           : 'hover:bg-muted/50'
-      }`}
+        }`}
     >
       {icon}
       <span className="ml-3">{label}</span>
