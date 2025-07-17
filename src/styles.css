@@ -15,6 +15,11 @@ body {
   color: hsl(var(--foreground));
 }
 
+body.dark {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -46,33 +51,6 @@ code {
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
-}
-
-.dark {
-  --background: oklch(0.088 0.002 285.849);
-  --foreground: oklch(0.982 0.001 286.438);
-  --card: oklch(0.088 0.002 285.849);
-  --card-foreground: oklch(0.982 0.001 286.438);
-  --popover: oklch(0.088 0.002 285.849);
-  --popover-foreground: oklch(0.982 0.001 286.438);
-  --primary: oklch(0.982 0.001 286.438);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.155 0.004 285.859);
-  --secondary-foreground: oklch(0.982 0.001 286.438);
-  --muted: oklch(0.155 0.004 285.859);
-  --muted-foreground: oklch(0.598 0.012 285.975);
-  --accent: oklch(0.155 0.004 285.859);
-  --accent-foreground: oklch(0.982 0.001 286.438);
-  --destructive: oklch(0.626 0.251 27.31);
-  --destructive-foreground: oklch(0.982 0.001 286.438);
-  --border: oklch(0.155 0.004 285.859);
-  --input: oklch(0.155 0.004 285.859);
-  --ring: oklch(0.275 0.007 285.896);
-  --chart-1: oklch(0.746 0.209 41.026);
-  --chart-2: oklch(0.7 0.111 184.652);
-  --chart-3: oklch(0.498 0.066 227.379);
-  --chart-4: oklch(0.928 0.178 84.359);
-  --chart-5: oklch(0.869 0.177 70.049);
 }
 
 .dark {
@@ -191,13 +169,33 @@ code {
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
 }
 
+.dark .bg-gradient-light {
+  background: linear-gradient(
+    135deg,
+    hsla(var(--background), 0.8) 0%,
+    hsla(var(--card), 0.9) 50%,
+    hsla(var(--background), 0.8) 100%
+  );
+}
+
 .gradient-blue {
   background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.dark .gradient-blue {
+  background: linear-gradient(
+    135deg,
+    hsla(var(--primary), 0.7) 0%,
+    hsla(var(--primary), 0.3) 100%
+  );
 }
 
 /* Button hover effects */
 .btn-hover-lift {
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
 }
 
 .btn-hover-lift:hover {
@@ -205,12 +203,53 @@ code {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
+.dark .btn-hover-lift:hover {
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.3),
+    0 0 5px rgba(255, 255, 255, 0.1);
+  border-color: hsla(var(--primary), 0.5);
+}
+
+.btn-hover-lift::after {
+  content: '';
+  position: absolute;
+  bottom: -50%;
+  left: -10%;
+  width: 120%;
+  height: 50%;
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.1), transparent);
+  transform: rotate(-5deg);
+  transition: all 0.4s ease;
+  z-index: -1;
+}
+
+.dark .btn-hover-lift::after {
+  background: linear-gradient(to top, rgba(255, 255, 255, 0.05), transparent);
+}
+
+.btn-hover-lift:hover::after {
+  transform: translateY(-20px) rotate(-5deg);
+}
+
 /* Card shadow effects */
 .card-hover {
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .card-hover:hover {
   transform: translateY(-8px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid hsla(var(--border), 0.6);
+}
+
+.dark .card-hover:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  border-color: hsla(var(--border), 1);
 }
