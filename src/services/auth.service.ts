@@ -9,31 +9,19 @@ const isBrowser = typeof window !== 'undefined'
 
 
 export class AuthService {
-  /**
-   * Login with email and password
-   */
-  async login(credentials: LoginRequest): Promise<LoginResponse> {
-    // Use the apiService login method
-    const response = await apiService.login(credentials)
-    
-    // Store additional data if needed
+
+   async login(credentials: LoginRequest): Promise<LoginResponse> {
+    const response = await apiService.login(credentials) // Use the apiService login method    
     if (isBrowser) {
       localStorage.setItem('refresh_token', response.refreshToken)
     }
-
     return response
   }
 
-  /**
-   * Register a new user
-   */
   async register(userData: RegisterRequest): Promise<AuthResponse> {
-    // Use the apiService register method
     const response = await apiService.register(userData)
-    
-    // Convert the API response to AuthResponse format
     return {
-      user: response.data,
+      user: response.user,
       accessToken: localStorage.getItem('auth_token') || '',
       refreshToken: localStorage.getItem('refresh_token') || '',
     }
@@ -71,8 +59,6 @@ export class AuthService {
    */
   async logout(): Promise<void> {
     await apiService.logout()
-    
-    // Clear additional stored data
     if (isBrowser) {
       localStorage.removeItem('refresh_token')
     }
@@ -86,7 +72,6 @@ export class AuthService {
     if (!refreshToken) {
       throw new Error('No refresh token available')
     }
-
     const response = await apiService.refreshToken()
     
     // Update stored user data if needed

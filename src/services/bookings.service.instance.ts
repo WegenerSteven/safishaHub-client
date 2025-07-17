@@ -1,5 +1,5 @@
 import { BookingsService } from './bookings.service';
-import type { BookingFilterParams } from './bookings.service';
+import type { BookingFilterParams } from '../interfaces/booking/Booking.interface';
 import type { Booking } from '@/interfaces';
 
 // Create an instance of the bookings service

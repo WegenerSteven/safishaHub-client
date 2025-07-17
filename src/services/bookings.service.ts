@@ -1,66 +1,6 @@
 import apiService from './api';
 import type { Booking } from '@/interfaces';
-
-export interface CreateBookingRequest {
-  user_id: string;
-  service_id: string;
-  service_date: string; // ISO date string
-  service_time: string; // HH:MM format
-  total_amount: number;
-  payment_method?: string;
-  special_instructions?: string;
-  vehicle_info?: {
-    type: string;
-    make?: string;
-    model?: string;
-    year?: number;
-    license_plate?: string;
-  };
-  location_info?: {
-    address: string;
-    latitude?: number;
-    longitude?: number;
-    note?: string;
-  };
-  add_ons?: Array<{
-    addon_id: string;
-    price: number;
-  }>;
-}
-
-export interface UpdateBookingRequest {
-  service_date?: string;
-  service_time?: string;
-  status?: string;
-  payment_method?: string;
-  special_instructions?: string;
-  vehicle_info?: {
-    type: string;
-    make?: string;
-    model?: string;
-    year?: number;
-    license_plate?: string;
-  };
-  location_info?: {
-    address: string;
-    latitude?: number;
-    longitude?: number;
-    note?: string;
-  };
-}
-
-export interface BookingFilterParams {
-  user_id?: string;
-  service_id?: string;
-  provider_id?: string;
-  status?: string;
-  date_from?: string;
-  date_to?: string;
-  page?: number;
-  limit?: number;
-  sort_by?: string;
-  sort_order?: 'ASC' | 'DESC';
-}
+import type { CreateBookingRequest, UpdateBookingRequest,BookingFilterParams  } from '@/interfaces/booking/Booking.interface';
 
 export class BookingsService {
   /**
@@ -208,3 +148,4 @@ export class BookingsService {
     }
   }
 }
+

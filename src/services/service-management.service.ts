@@ -21,7 +21,7 @@ export interface ServicePricing {
 // Updated service interface to match backend requirements
 export interface Service {
   id?: string;
-  provider_id?: string; // Optional since backend will set this from auth
+  business_id?: string; // Business ID will be set automatically
   category_id: string;
   location_id?: string;
   name: string;
@@ -71,7 +71,7 @@ export const serviceManagementService = {
     };
 
     console.log('Creating service with data:', JSON.stringify(cleanedData, null, 2));
-    
+
     try {
       const response = await api.post<Service, { data: Service }>('/services', cleanedData);
       console.log('Service created successfully:', response);
@@ -85,22 +85,22 @@ export const serviceManagementService = {
       throw error;
     }
   },
-  
+
   // Helper methods to validate enum values
   validateServiceType(type: string): 'basic' | 'standard' | 'premium' | 'deluxe' {
     const validTypes = ['basic', 'standard', 'premium', 'deluxe'];
-    return validTypes.includes(type.toLowerCase()) 
+    return validTypes.includes(type.toLowerCase())
       ? type.toLowerCase() as 'basic' | 'standard' | 'premium' | 'deluxe'
       : 'standard';
   },
-  
+
   validateVehicleType(type: string): 'sedan' | 'suv' | 'truck' | 'motorcycle' | 'van' | 'hatchback' {
     const validTypes = ['sedan', 'suv', 'truck', 'motorcycle', 'van', 'hatchback'];
     return validTypes.includes(type.toLowerCase())
       ? type.toLowerCase() as 'sedan' | 'suv' | 'truck' | 'motorcycle' | 'van' | 'hatchback'
       : 'sedan';
   },
-  
+
   validateStatus(status: string): 'active' | 'inactive' | 'draft' {
     const validStatuses = ['active', 'inactive', 'draft'];
     return validStatuses.includes(status.toLowerCase())
@@ -124,30 +124,30 @@ export const serviceManagementService = {
     try {
       const response = await api.get<any>('/services/categories');
       console.log('Categories API response:', response); // Add logging
-      
+
       // Handle different response formats
       if (response && typeof response === 'object') {
         // Direct array response
         if (Array.isArray(response)) {
           return response;
         }
-        
+
         // Response with data property containing array
         if (response.data && Array.isArray(response.data)) {
           return response.data;
         }
-        
+
         // Response with nested data property
         if (response.data && response.data.data && Array.isArray(response.data.data)) {
           return response.data.data;
         }
-        
+
         // Success property with data array
         if (response.success && Array.isArray(response.data)) {
           return response.data;
         }
       }
-      
+
       // If we can't determine the format
       console.warn('Unexpected categories response format:', response);
       return [];
