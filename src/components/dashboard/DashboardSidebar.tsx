@@ -9,11 +9,12 @@ import {
   Menu,
   Settings,
   UserIcon,
+  ServerIcon,
   X,
 } from 'lucide-react'
-import type {User} from '@/services/auth.service';
+import type { User } from '@/services/auth.service';
 import { Button } from '@/components/ui/button'
-import {  authService } from '@/services/auth.service'
+import { authService } from '@/services/auth.service'
 
 interface DashboardSidebarProps {
   children: React.ReactNode
@@ -98,28 +99,28 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
 
   const providerNavItems = [
     {
-      name: 'Overview',
+      name: 'Dashboard',
       href: '/dashboard',
       icon: Home,
       current: location.pathname === '/dashboard',
     },
     {
-      name: 'My Bookings',
-      href: '/dashboard/bookings',
-      icon: Calendar,
-      current: location.pathname === '/dashboard/bookings',
-    },
-    {
-      name: 'Provider Bookings',
+      name: 'Bookings',
       href: '/dashboard/provider-bookings',
       icon: Calendar,
       current: location.pathname === '/dashboard/provider-bookings',
     },
     {
       name: 'Register Business',
-      href: '/dashboard/register-business',
+      href: '/dashboard/business/register',
       icon: Car,
-      current: location.pathname === '/dashboard/register-business',
+      current: location.pathname === '/dashboard/business/register',
+    },
+    {
+      name: 'Services',
+      href: '/dashboard/services/manage',
+      icon: ServerIcon,
+      current: location.pathname === '/dashboard/business/manage',
     },
     {
       name: 'Profile',
@@ -136,7 +137,7 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
   ]
 
   const navigation =
-    user.role === 'SERVICE_PROVIDER' ? providerNavItems : customerNavItems
+    user.role === 'service_provider' ? providerNavItems : customerNavItems
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -166,11 +167,10 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      item.current
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${item.current
                         ? 'bg-blue-100 text-blue-700'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
+                      }`}
                     onClick={() => setSidebarOpen(false)}
                   >
                     <item.icon className="mr-3 h-5 w-5" />
@@ -226,11 +226,10 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
                 <li key={item.name}>
                   <Link
                     to={item.href}
-                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      item.current
+                    className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${item.current
                         ? 'bg-blue-100 text-blue-700'
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                    }`}
+                      }`}
                   >
                     <item.icon className="mr-3 h-5 w-5" />
                     {item.name}

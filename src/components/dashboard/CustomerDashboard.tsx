@@ -76,7 +76,7 @@ export function CustomerDashboard() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">Total Earnings</p>
-                  <p className="text-2xl font-bold text-gray-900">$2,456</p>
+                  <p className="text-2xl font-bold text-gray-900"></p>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ export function CustomerDashboard() {
                 </div>
                 <div className="ml-4">
                   <p className="text-sm text-gray-600">Total Spent</p>
-                  <p className="text-2xl font-bold text-gray-900">$245</p>
+                  <p className="text-2xl font-bold text-gray-900"></p>
                 </div>
               </div>
             </div>
