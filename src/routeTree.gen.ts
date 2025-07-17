@@ -10,36 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ServicesRouteImport } from './routes/services'
-import { Route as ServiceProviderDashboardRouteImport } from './routes/service-provider-dashboard'
-import { Route as ServiceProviderRouteImport } from './routes/service-provider'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AichatbotRouteImport } from './routes/aichatbot'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardIndexRouteImport } from './routes/dashboard/index'
 import { Route as ServiceProviderBookingsRouteImport } from './routes/service-provider/bookings'
-import { Route as DashboardRegisterBusinessRouteImport } from './routes/dashboard/register-business'
 import { Route as DashboardProviderBookingsRouteImport } from './routes/dashboard/provider-bookings'
+import { Route as DashboardProviderRouteImport } from './routes/dashboard/provider'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
 import { Route as DashboardBookingsRouteImport } from './routes/dashboard/bookings'
+import { Route as DashboardServicesManageRouteImport } from './routes/dashboard/services/manage'
+import { Route as DashboardBusinessRegisterRouteImport } from './routes/dashboard/business/register'
 
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ServiceProviderDashboardRoute =
-  ServiceProviderDashboardRouteImport.update({
-    id: '/service-provider-dashboard',
-    path: '/service-provider-dashboard',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ServiceProviderRoute = ServiceProviderRouteImport.update({
-  id: '/service-provider',
-  path: '/service-provider',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -67,6 +57,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AichatbotRoute = AichatbotRouteImport.update({
+  id: '/aichatbot',
+  path: '/aichatbot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -83,22 +78,21 @@ const DashboardIndexRoute = DashboardIndexRouteImport.update({
   getParentRoute: () => DashboardRoute,
 } as any)
 const ServiceProviderBookingsRoute = ServiceProviderBookingsRouteImport.update({
-  id: '/bookings',
-  path: '/bookings',
-  getParentRoute: () => ServiceProviderRoute,
+  id: '/service-provider/bookings',
+  path: '/service-provider/bookings',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const DashboardRegisterBusinessRoute =
-  DashboardRegisterBusinessRouteImport.update({
-    id: '/register-business',
-    path: '/register-business',
-    getParentRoute: () => DashboardRoute,
-  } as any)
 const DashboardProviderBookingsRoute =
   DashboardProviderBookingsRouteImport.update({
     id: '/provider-bookings',
     path: '/provider-bookings',
     getParentRoute: () => DashboardRoute,
   } as any)
+const DashboardProviderRoute = DashboardProviderRouteImport.update({
+  id: '/provider',
+  path: '/provider',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardProfileRoute = DashboardProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -109,128 +103,145 @@ const DashboardBookingsRoute = DashboardBookingsRouteImport.update({
   path: '/bookings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardServicesManageRoute = DashboardServicesManageRouteImport.update({
+  id: '/services/manage',
+  path: '/services/manage',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardBusinessRegisterRoute =
+  DashboardBusinessRegisterRouteImport.update({
+    id: '/business/register',
+    path: '/business/register',
+    getParentRoute: () => DashboardRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/aichatbot': typeof AichatbotRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/service-provider': typeof ServiceProviderRouteWithChildren
-  '/service-provider-dashboard': typeof ServiceProviderDashboardRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/provider': typeof DashboardProviderRoute
   '/dashboard/provider-bookings': typeof DashboardProviderBookingsRoute
-  '/dashboard/register-business': typeof DashboardRegisterBusinessRoute
   '/service-provider/bookings': typeof ServiceProviderBookingsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/business/register': typeof DashboardBusinessRegisterRoute
+  '/dashboard/services/manage': typeof DashboardServicesManageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/aichatbot': typeof AichatbotRoute
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/service-provider': typeof ServiceProviderRouteWithChildren
-  '/service-provider-dashboard': typeof ServiceProviderDashboardRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/provider': typeof DashboardProviderRoute
   '/dashboard/provider-bookings': typeof DashboardProviderBookingsRoute
-  '/dashboard/register-business': typeof DashboardRegisterBusinessRoute
   '/service-provider/bookings': typeof ServiceProviderBookingsRoute
   '/dashboard': typeof DashboardIndexRoute
+  '/dashboard/business/register': typeof DashboardBusinessRegisterRoute
+  '/dashboard/services/manage': typeof DashboardServicesManageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/aichatbot': typeof AichatbotRoute
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/fleet': typeof FleetRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/service-provider': typeof ServiceProviderRouteWithChildren
-  '/service-provider-dashboard': typeof ServiceProviderDashboardRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
+  '/dashboard/provider': typeof DashboardProviderRoute
   '/dashboard/provider-bookings': typeof DashboardProviderBookingsRoute
-  '/dashboard/register-business': typeof DashboardRegisterBusinessRoute
   '/service-provider/bookings': typeof ServiceProviderBookingsRoute
   '/dashboard/': typeof DashboardIndexRoute
+  '/dashboard/business/register': typeof DashboardBusinessRegisterRoute
+  '/dashboard/services/manage': typeof DashboardServicesManageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/aichatbot'
     | '/contact'
     | '/dashboard'
     | '/fleet'
     | '/login'
     | '/register'
-    | '/service-provider'
-    | '/service-provider-dashboard'
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
+    | '/dashboard/provider'
     | '/dashboard/provider-bookings'
-    | '/dashboard/register-business'
     | '/service-provider/bookings'
     | '/dashboard/'
+    | '/dashboard/business/register'
+    | '/dashboard/services/manage'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/aichatbot'
     | '/contact'
     | '/fleet'
     | '/login'
     | '/register'
-    | '/service-provider'
-    | '/service-provider-dashboard'
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
+    | '/dashboard/provider'
     | '/dashboard/provider-bookings'
-    | '/dashboard/register-business'
     | '/service-provider/bookings'
     | '/dashboard'
+    | '/dashboard/business/register'
+    | '/dashboard/services/manage'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/aichatbot'
     | '/contact'
     | '/dashboard'
     | '/fleet'
     | '/login'
     | '/register'
-    | '/service-provider'
-    | '/service-provider-dashboard'
     | '/services'
     | '/dashboard/bookings'
     | '/dashboard/profile'
+    | '/dashboard/provider'
     | '/dashboard/provider-bookings'
-    | '/dashboard/register-business'
     | '/service-provider/bookings'
     | '/dashboard/'
+    | '/dashboard/business/register'
+    | '/dashboard/services/manage'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AichatbotRoute: typeof AichatbotRoute
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   FleetRoute: typeof FleetRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  ServiceProviderRoute: typeof ServiceProviderRouteWithChildren
-  ServiceProviderDashboardRoute: typeof ServiceProviderDashboardRoute
   ServicesRoute: typeof ServicesRoute
+  ServiceProviderBookingsRoute: typeof ServiceProviderBookingsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -240,20 +251,6 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/service-provider-dashboard': {
-      id: '/service-provider-dashboard'
-      path: '/service-provider-dashboard'
-      fullPath: '/service-provider-dashboard'
-      preLoaderRoute: typeof ServiceProviderDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/service-provider': {
-      id: '/service-provider'
-      path: '/service-provider'
-      fullPath: '/service-provider'
-      preLoaderRoute: typeof ServiceProviderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -291,6 +288,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aichatbot': {
+      id: '/aichatbot'
+      path: '/aichatbot'
+      fullPath: '/aichatbot'
+      preLoaderRoute: typeof AichatbotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -314,23 +318,23 @@ declare module '@tanstack/react-router' {
     }
     '/service-provider/bookings': {
       id: '/service-provider/bookings'
-      path: '/bookings'
+      path: '/service-provider/bookings'
       fullPath: '/service-provider/bookings'
       preLoaderRoute: typeof ServiceProviderBookingsRouteImport
-      parentRoute: typeof ServiceProviderRoute
-    }
-    '/dashboard/register-business': {
-      id: '/dashboard/register-business'
-      path: '/register-business'
-      fullPath: '/dashboard/register-business'
-      preLoaderRoute: typeof DashboardRegisterBusinessRouteImport
-      parentRoute: typeof DashboardRoute
+      parentRoute: typeof rootRouteImport
     }
     '/dashboard/provider-bookings': {
       id: '/dashboard/provider-bookings'
       path: '/provider-bookings'
       fullPath: '/dashboard/provider-bookings'
       preLoaderRoute: typeof DashboardProviderBookingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/provider': {
+      id: '/dashboard/provider'
+      path: '/provider'
+      fullPath: '/dashboard/provider'
+      preLoaderRoute: typeof DashboardProviderRouteImport
       parentRoute: typeof DashboardRoute
     }
     '/dashboard/profile': {
@@ -347,52 +351,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardBookingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/services/manage': {
+      id: '/dashboard/services/manage'
+      path: '/services/manage'
+      fullPath: '/dashboard/services/manage'
+      preLoaderRoute: typeof DashboardServicesManageRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/dashboard/business/register': {
+      id: '/dashboard/business/register'
+      path: '/business/register'
+      fullPath: '/dashboard/business/register'
+      preLoaderRoute: typeof DashboardBusinessRegisterRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
   DashboardBookingsRoute: typeof DashboardBookingsRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
+  DashboardProviderRoute: typeof DashboardProviderRoute
   DashboardProviderBookingsRoute: typeof DashboardProviderBookingsRoute
-  DashboardRegisterBusinessRoute: typeof DashboardRegisterBusinessRoute
   DashboardIndexRoute: typeof DashboardIndexRoute
+  DashboardBusinessRegisterRoute: typeof DashboardBusinessRegisterRoute
+  DashboardServicesManageRoute: typeof DashboardServicesManageRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBookingsRoute: DashboardBookingsRoute,
   DashboardProfileRoute: DashboardProfileRoute,
+  DashboardProviderRoute: DashboardProviderRoute,
   DashboardProviderBookingsRoute: DashboardProviderBookingsRoute,
-  DashboardRegisterBusinessRoute: DashboardRegisterBusinessRoute,
   DashboardIndexRoute: DashboardIndexRoute,
+  DashboardBusinessRegisterRoute: DashboardBusinessRegisterRoute,
+  DashboardServicesManageRoute: DashboardServicesManageRoute,
 }
 
 const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
   DashboardRouteChildren,
 )
 
-interface ServiceProviderRouteChildren {
-  ServiceProviderBookingsRoute: typeof ServiceProviderBookingsRoute
-}
-
-const ServiceProviderRouteChildren: ServiceProviderRouteChildren = {
-  ServiceProviderBookingsRoute: ServiceProviderBookingsRoute,
-}
-
-const ServiceProviderRouteWithChildren = ServiceProviderRoute._addFileChildren(
-  ServiceProviderRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AichatbotRoute: AichatbotRoute,
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   FleetRoute: FleetRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  ServiceProviderRoute: ServiceProviderRouteWithChildren,
-  ServiceProviderDashboardRoute: ServiceProviderDashboardRoute,
   ServicesRoute: ServicesRoute,
+  ServiceProviderBookingsRoute: ServiceProviderBookingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
