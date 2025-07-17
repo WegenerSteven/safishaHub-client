@@ -53,7 +53,7 @@ function HomePage() {
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
           <div className="absolute bottom-0 left-20 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
         </div>
-        
+
         <div className="relative container mx-auto px-4 py-20 lg:py-32">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
@@ -65,11 +65,11 @@ function HomePage() {
                   <span className="text-blue-600">Near You</span>
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-lg">
-                  Professional car wash services at your fingertips. Choose from basic wash to 
+                  Professional car wash services at your fingertips. Choose from basic wash to
                   premium detailing, all from trusted local providers.
                 </p>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/services">
                   <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 text-lg font-semibold rounded-xl">
@@ -77,16 +77,16 @@ function HomePage() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
                 </Link>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
+                <Button
+                  size="lg"
+                  variant="outline"
                   className="border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-8 py-4 text-lg font-semibold rounded-xl"
                   onClick={openRegister}
                 >
                   Get Started
                 </Button>
               </div>
-              
+
               {/* Trust indicators */}
               <div className="grid grid-cols-4 gap-4 pt-8">
                 <div className="text-center">
@@ -115,7 +115,7 @@ function HomePage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Hero Image */}
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
@@ -152,7 +152,7 @@ function HomePage() {
               From quick washes to premium detailing, we have the perfect service for every need and budget.
             </p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {/* Basic Wash */}
             <div className="bg-card rounded-xl shadow-lg p-8 text-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border">
@@ -420,26 +420,26 @@ function HomePage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-background">
         <div className="container mx-auto px-4 py-16">
           <div className="mb-16">
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Meet Our Team</h2>
+              <h2 className="text-3xl font-bold mb-4 dark:text-foreground">Meet Our Team</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
                 Our passionate team of experts is dedicated to revolutionizing the car care industry.
               </p>
             </div>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white rounded-lg border shadow-sm text-center hover:shadow-xl transition-shadow duration-300">
+              <div className="bg-white dark:bg-card rounded-lg border dark:border-border shadow-sm text-center hover:shadow-xl transition-shadow duration-300">
                 <div className="flex flex-col space-y-1.5 p-6">
-                  <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face" 
-                      alt="Sarah Johnson" 
+                  <div className="w-24 h-24 bg-gray-200 dark:bg-muted rounded-full mx-auto mb-4 overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face"
+                      alt="Sarah Johnson"
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h3 className="font-semibold tracking-tight text-lg">Sarah Johnson</h3>
+                  <h3 className="font-semibold tracking-tight text-lg dark:text-foreground">Sarah Johnson</h3>
                   <p className="text-sm text-primary font-medium">CEO & Founder</p>
                 </div>
                 <div className="p-6 pt-0">
@@ -448,13 +448,13 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white rounded-lg border shadow-sm text-center hover:shadow-xl transition-shadow duration-300">
                 <div className="flex flex-col space-y-1.5 p-6">
                   <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face" 
-                      alt="Mike Chen" 
+                    <img
+                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+                      alt="Mike Chen"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -467,13 +467,13 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white rounded-lg border shadow-sm text-center hover:shadow-xl transition-shadow duration-300">
                 <div className="flex flex-col space-y-1.5 p-6">
                   <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face" 
-                      alt="Emily Rodriguez" 
+                    <img
+                      src="https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+                      alt="Emily Rodriguez"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -486,13 +486,13 @@ function HomePage() {
                   </p>
                 </div>
               </div>
-              
+
               <div className="bg-white rounded-lg border shadow-sm text-center hover:shadow-xl transition-shadow duration-300">
                 <div className="flex flex-col space-y-1.5 p-6">
                   <div className="w-24 h-24 bg-gray-200 rounded-full mx-auto mb-4 overflow-hidden">
-                    <img 
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" 
-                      alt="David Kim" 
+                    <img
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+                      alt="David Kim"
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -516,7 +516,7 @@ function HomePage() {
           <div className="text-center bg-card rounded-2xl p-8 md:p-12 shadow-lg border">
             <h2 className="text-3xl font-bold mb-4 text-foreground">Ready to Get Started?</h2>
             <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Join thousands of satisfied customers who trust SafishaHub for their car care needs. 
+              Join thousands of satisfied customers who trust SafishaHub for their car care needs.
               Sign up today and experience the difference.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

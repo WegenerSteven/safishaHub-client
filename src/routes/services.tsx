@@ -80,7 +80,7 @@ function RouteComponent() {
       setError(null)
 
       // Load services directly from API - no mock data fallback
-      const servicesData = await servicesService.getAllServices({ is_available: true, status: ServiceStatus.ACTIVE })
+      const servicesData = await servicesService.getServices({ status: ServiceStatus.ACTIVE })
       console.log('Services data received:', servicesData)
 
       // Ensure we have an array of services
@@ -162,24 +162,24 @@ function RouteComponent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading services...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600 dark:text-primary" />
+          <p className="text-gray-600 dark:text-muted-foreground">Loading services...</p>
         </div>
       </div>
     )
   }
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 py-20">
+      <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-background dark:via-card dark:to-background py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-5xl font-bold text-gray-900 dark:text-foreground mb-6">
               Car Wash Services
             </h1>
-            <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 dark:text-muted-foreground mb-12 max-w-3xl mx-auto">
               Professional car wash services tailored to your needs.
               From quick washes to premium detailing, we have the perfect service for every budget.
             </p>

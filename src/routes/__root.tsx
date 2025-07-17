@@ -15,6 +15,7 @@ import { AuthProvider } from '../contexts/auth-context'
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
 import appCss from '../styles.css?url'
+import themeFixesCss from '../components/theme/theme-fixes.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -46,6 +47,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: 'stylesheet',
         href: appCss,
       },
+      {
+        rel: 'stylesheet',
+        href: themeFixesCss,
+      },
     ],
   }),
 
@@ -55,7 +60,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         attribute="class"
         defaultTheme="system"
         enableSystem
-        disableTransitionOnChange
       >
         <ModalProvider>
           <AuthProvider>

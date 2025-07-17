@@ -6,13 +6,13 @@ export const Route = createFileRoute('/fleet')({
 
 function RouteComponent() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-background">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-foreground mb-8">
             Fleet Services
           </h1>
-          <p className="text-xl text-gray-600 mb-12">
+          <p className="text-xl text-gray-600 dark:text-muted-foreground mb-12">
             Professional car wash services for your entire fleet
           </p>
         </div>
@@ -25,14 +25,14 @@ function RouteComponent() {
             </h2>
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
-                <div className="flex-shrink-0 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm">✓</span>
+                <div className="flex-shrink-0 w-6 h-6 bg-blue-600 dark:bg-primary rounded-full flex items-center justify-center">
+                  <span className="text-white dark:text-primary-foreground text-sm">✓</span>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-gray-900 dark:text-foreground">
                     Volume Discounts
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-gray-600 dark:text-muted-foreground">
                     Save up to 30% on bulk vehicle washing services
                   </p>
                 </div>

@@ -7,16 +7,16 @@ export const Route = createFileRoute('/about')({
 
 function RouteComponent() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-background">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 py-20">
+      <section className="relative bg-gradient-to-br from-blue-50 via-white to-blue-50 dark:from-background dark:via-card dark:to-background py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+            <h1 className="text-5xl font-bold text-gray-900 dark:text-foreground mb-6">
               About SafishaHub
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Connecting you with trusted car wash professionals across Kenya. 
+            <p className="text-xl text-gray-600 dark:text-muted-foreground max-w-3xl mx-auto">
+              Connecting you with trusted car wash professionals across Kenya.
               "Safisha" means "to clean" in Swahili, reflecting our African roots.
             </p>
           </div>
@@ -28,21 +28,21 @@ function RouteComponent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div>
-              <h2 className="text-3xl font-semibold text-gray-900 mb-6">
+              <h2 className="text-3xl font-semibold text-gray-900 dark:text-foreground mb-6">
                 Our Story
               </h2>
-              <p className="text-gray-600 mb-4 text-lg">
+              <p className="text-gray-600 dark:text-muted-foreground mb-4 text-lg">
                 SafishaHub was founded with a simple mission: to make professional
                 car care accessible and convenient for everyone in Kenya. We
                 recognized the need for a reliable platform that connects car
                 owners with trusted, professional car wash service providers.
               </p>
-              <p className="text-gray-600 mb-4 text-lg">
+              <p className="text-gray-600 dark:text-muted-foreground mb-4 text-lg">
                 Starting in Nairobi, we've grown to serve customers across major
                 cities, building a network of vetted professionals who share our
                 commitment to quality and customer satisfaction.
               </p>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 dark:text-muted-foreground text-lg">
                 Today, SafishaHub is Kenya's leading car wash service platform,
                 trusted by thousands of customers and hundreds of service
                 providers.
