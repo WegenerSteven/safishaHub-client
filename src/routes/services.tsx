@@ -305,7 +305,7 @@ function RouteComponent() {
                                 <span className="text-sm text-gray-600">
                                   {service.business.city && service.business.state
                                     ? `${service.business.city}, ${service.business.state}`
-                                    : service.business.address
+                                    : service.business.business_address
                                   }
                                 </span>
                               </div>
@@ -323,7 +323,7 @@ function RouteComponent() {
                             </p>
 
                             {/* Operating Hours */}
-                            <div className="flex items-center mb-3">
+                            {/* <div className="flex items-center mb-3">
                               <Clock className="h-4 w-4 text-gray-600 mr-1" />
                               <span className={`text-sm ${getCurrentOperatingStatus(service.business.operating_hours?.hours)?.isOpen
                                 ? 'text-green-600'
@@ -331,7 +331,7 @@ function RouteComponent() {
                                 }`}>
                                 {getCurrentOperatingStatus(service.business.operating_hours?.hours)?.status}
                               </span>
-                            </div>
+                            </div> */}
                           </>
                         ) : (
                           <>
@@ -383,7 +383,7 @@ function RouteComponent() {
                     )}
 
                     {/* Service Features */}
-                    <div className="px-4 py-2">
+                    {/* <div className="px-4 py-2">
                       <div className="text-sm text-gray-600">
                         Services ({service.features?.length || 0})
                       </div>
@@ -397,7 +397,7 @@ function RouteComponent() {
                           ))}
                         </div>
                       )}
-                    </div>
+                    </div> */}
 
                     {/* Price & Action Buttons */}
                     <div className="p-4 border-t border-gray-100 flex items-center justify-between">

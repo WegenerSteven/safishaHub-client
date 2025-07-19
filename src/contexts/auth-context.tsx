@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { apiService } from '@/services/api';
+import type { RegisterRequest } from '@/interfaces';
 
 // Define API response types
 export interface AuthResponse {
@@ -136,7 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Register function
-  const register = async (userData: any): Promise<void> => {
+  const register = async (userData: RegisterRequest): Promise<void> => {
     try {
       setError(null);
       setLoading(true);

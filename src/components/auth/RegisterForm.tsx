@@ -18,8 +18,8 @@ import type { RegisterRequest } from '@/interfaces/auth/User.interface'
 import { useModal } from '@/contexts/ModalContext'
 
 interface RegisterFormData {
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   email: string
   password: string
   confirmPassword: string
@@ -47,8 +47,8 @@ export function RegisterForm({
 
   const form = useForm({
     defaultValues: {
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -64,8 +64,8 @@ export function RegisterForm({
           console.log('Form submission - Form values:', value);
 
           const registerData: RegisterRequest = {
-            first_name: value.firstName,
-            last_name: value.lastName,
+            first_name: value.first_name,
+            last_name: value.last_name,
             email: value.email,
             password: value.password,
             role: value.accountType,
@@ -126,7 +126,7 @@ export function RegisterForm({
               First Name
             </Label>
             <form.Field
-              name="firstName"
+              name="first_name"
               validators={{
                 onChange: ({ value }) => {
                   if (!value) return 'First name is required'
@@ -172,7 +172,7 @@ export function RegisterForm({
               Last Name
             </Label>
             <form.Field
-              name="lastName"
+              name="last_name"
               validators={{
                 onChange: ({ value }) => {
                   if (!value) return 'Last name is required'
@@ -304,8 +304,8 @@ export function RegisterForm({
               validators={{
                 onChange: ({ value }) => {
                   if (!value) return 'Password is required'
-                  if (value.length < 6)
-                    return 'Password must be at least 6 characters'
+                  if (value.length < 8)
+                    return 'Password must be at least 8 characters'
                   if (!/(?=.*[a-z])(?=.*[A-Z])/.test(value))
                     return 'Password must contain both uppercase and lowercase letters'
                   if (!/(?=.*\d)/.test(value))
