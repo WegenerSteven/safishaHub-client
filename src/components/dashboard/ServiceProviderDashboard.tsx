@@ -79,7 +79,7 @@ export function ServiceProviderDashboard() {
           <p className="text-gray-600">Manage your car wash business</p>
         </div>
         {businessStatus !== 'active' && (
-          <Link to="/dashboard/register-business">
+          <Link to="/dashboard/business/register">
             <Button className="bg-blue-600 hover:bg-blue-700">
               <Plus className="h-4 w-4 mr-2" />
               Register Business
@@ -158,7 +158,7 @@ export function ServiceProviderDashboard() {
           </CardHeader>
           <CardContent>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/dashboard/register-business" className="flex-1">
+              <Link to="/dashboard/business/register" className="flex-1">
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   <Plus className="h-4 w-4 mr-2" />
                   Register Your Business
@@ -214,7 +214,7 @@ export function ServiceProviderDashboard() {
                     ? "Keep your business information up to date to attract more customers."
                     : "Set up your business profile to attract more customers."}
                 </p>
-                <Link to="/dashboard/register-business">
+                <Link to="/dashboard/profile">
                   <Button variant="outline">
                     {businessStatus === 'active' ? 'Edit Profile' : 'Update Profile'}
                   </Button>

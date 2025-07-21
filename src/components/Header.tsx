@@ -7,6 +7,7 @@ import { ThemeToggle } from './theme/theme-toggle'
 import type {User as AuthUser} from '@/services/auth.service';
 import {  authService } from '@/services/auth.service'
 import { useModal } from '@/contexts/ModalContext'
+import NotificationBell from './NotificationBell'
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -114,7 +115,8 @@ export default function Header() {
           </nav>
 
           {/* Auth buttons and mobile menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 cursor-pointer">
+            { user && <NotificationBell/>}
             <ThemeToggle />
             <div className="hidden md:flex items-center space-x-3">
               {user ? (

@@ -14,6 +14,7 @@ import {
 import { useState } from 'react'
 import { Button } from '../ui/button'
 import { authService } from '@/services'
+import { useAuth } from '@/contexts/auth-context'
 
 interface NavLinkProps {
   to: string
@@ -26,6 +27,7 @@ interface NavLinkProps {
 export function ServiceProviderNav() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const navigate = useNavigate()
+  const {user} = useAuth();
 
   const handleLogout = async () => {
     try {
