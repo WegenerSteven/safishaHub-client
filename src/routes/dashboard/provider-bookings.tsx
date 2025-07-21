@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useAuth } from '@/contexts/auth-context'
 import { BookingStatus } from '@/interfaces'
 import type { Booking } from '@/interfaces/booking/Booking.interface'
-import type { ExtendedBooking, BookingFilterParams } from '@/services/service-provider-dashboard.service'
+import type { /*ExtendedBooking*/ BookingFilterParams } from '@/services/service-provider-dashboard.service'
 import { toast } from 'sonner'
 import {
   Dialog,
@@ -40,7 +40,7 @@ export const Route = createFileRoute('/dashboard/provider-bookings')({
 })
 
 function ProviderBookingsPage() {
-  const { user, isAuthenticated, isServiceProvider } = useAuth()
+  const { isAuthenticated, isServiceProvider } = useAuth()
   const [bookings, setBookings] = useState<Booking[]>([])
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
@@ -56,7 +56,7 @@ function ProviderBookingsPage() {
   // Add pagination state
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  const [limit] = useState(10) // Items per page
+  // const [limit] = useState(10) // Items per page
 
   // Load bookings when authentication state or pagination changes
   useEffect(() => {
@@ -232,6 +232,14 @@ function ProviderBookingsPage() {
     }
   }
 
+  // Helper to format price as currency
+  function formatPrice(amount: number) {
+    return amount.toLocaleString('en-KE', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
   if (!isAuthenticated || !isServiceProvider) {
     return (
       <div className="p-6 bg-white rounded-lg shadow">
@@ -363,7 +371,7 @@ function ProviderBookingsPage() {
 
                 <div className="mt-2 text-sm text-gray-600">
                   <p className="font-medium">{booking.service?.name || 'Car Wash Service'}</p>
-                  <p>KSh {parseFloat(booking.total_amount || '0').toFixed(2)}</p>
+                  <p>KSh {formatPrice(Number(booking.total_amount || '0'))}</p>
                 </div>
               </div>
 
@@ -399,15 +407,6 @@ function ProviderBookingsPage() {
                     )}
                   </div>
                 </div>
-
-                {/* View Details Button */}
-                <Button
-                  variant="outline"
-                  className="w-full mt-2 text-blue-600 border-blue-200"
-                  onClick={() => openDetailsModal(booking)}
-                >
-                  View Details
-                </Button>
               </div>
 
               {/* Actions */}
@@ -433,13 +432,13 @@ function ProviderBookingsPage() {
                 {booking.status === BookingStatus.CONFIRMED && (
                   <div className="flex space-x-2">
                     <Button
-                      className="w-full bg-blue-600"
+                      className="flex-half bg-blue-600"
                       onClick={() => handleUpdateStatus(booking.id, BookingStatus.IN_PROGRESS)}
                     >
                       Start Service
                     </Button>
                     <Button
-                      className="w-full"
+                      className="w-half"
                       variant="outline"
                       onClick={() => openActionDialog('cancel', booking)}
                     >
@@ -450,7 +449,7 @@ function ProviderBookingsPage() {
 
                 {booking.status === BookingStatus.IN_PROGRESS && (
                   <Button
-                    className="w-full bg-green-600"
+                    className="w-half bg-green-600"
                     onClick={() => openActionDialog('complete', booking)}
                   >
                     Complete Service
@@ -459,7 +458,7 @@ function ProviderBookingsPage() {
 
                 {(booking.status === BookingStatus.COMPLETED || booking.status === BookingStatus.CANCELLED) && (
                   <Button
-                    className="w-full"
+                    className="w-full bg-blue-200 text-blue-700 cursor-pointer"
                     variant="outline"
                     onClick={() => openDetailsModal(booking)}
                   >
@@ -542,7 +541,7 @@ function ProviderBookingsPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-500">Amount</h3>
-                  <p>KSh {parseFloat(selectedBooking.total_amount || '0').toFixed(2)}</p>
+                  <p>KSh {formatPrice(Number(selectedBooking.total_amount || '0'))}</p>
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-gray-500">Booked On</h3>
@@ -596,7 +595,7 @@ function ProviderBookingsPage() {
                 {selectedBooking.status === BookingStatus.PENDING && (
                   <div className="flex space-x-2 w-full">
                     <Button
-                      className="flex-1 bg-blue-600"
+                      className="flex-0.5 bg-blue-600"
                       onClick={() => {
                         handleUpdateStatus(selectedBooking.id, BookingStatus.CONFIRMED)
                         setIsDetailsOpen(false)
@@ -605,7 +604,7 @@ function ProviderBookingsPage() {
                       Confirm
                     </Button>
                     <Button
-                      className="flex-1"
+                      className="flex-0.5"
                       variant="destructive"
                       onClick={() => {
                         handleUpdateStatus(selectedBooking.id, BookingStatus.CANCELLED)
@@ -620,7 +619,7 @@ function ProviderBookingsPage() {
                 {selectedBooking.status === BookingStatus.CONFIRMED && (
                   <div className="flex space-x-2 w-full">
                     <Button
-                      className="flex-1 bg-blue-600"
+                      className="flex-0.5 bg-blue-600"
                       onClick={() => {
                         handleUpdateStatus(selectedBooking.id, BookingStatus.IN_PROGRESS)
                         setIsDetailsOpen(false)
@@ -629,7 +628,7 @@ function ProviderBookingsPage() {
                       Start Service
                     </Button>
                     <Button
-                      className="flex-1"
+                      className="flex-0.5"
                       variant="destructive"
                       onClick={() => {
                         handleUpdateStatus(selectedBooking.id, BookingStatus.CANCELLED)

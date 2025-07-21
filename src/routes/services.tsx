@@ -7,6 +7,7 @@ import type { Service, User } from '@/interfaces'
 import type { Business } from '@/interfaces/business/Business.interface'
 import { ServiceType, ServiceStatus } from '@/interfaces/service/Service.interface'
 import { servicesService } from '@/services'
+import { toast } from 'sonner';
 import { BookingModal } from '@/components/booking'
 import { useAuth } from '@/contexts/auth-context'
 
@@ -155,8 +156,8 @@ function RouteComponent() {
 
   // Handle booking success
   const handleBookingSuccess = (bookingId: string) => {
-    // Show success message or redirect
-    alert(`Booking created successfully! Booking ID: ${bookingId}`);
+    // Show success toast notification using Sonner
+    toast.success(`Booking created successfully! Booking ID: ${bookingId}`);
     setIsBookingModalOpen(false);
   };
 

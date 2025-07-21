@@ -3,6 +3,7 @@ import { Calendar, Car, DollarSign, MapPin, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useEffect, useState } from 'react'
 import type { Booking } from '@/interfaces'
+import { toast } from 'sonner';
 import { bookingsService } from '@/services'
 
 export const Route = createFileRoute('/dashboard/bookings')({
@@ -13,6 +14,10 @@ function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [editBooking, setEditBooking] = useState<Booking | null>(null);
+  const [showEdit, setShowEdit] = useState(false);
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -129,17 +134,43 @@ function BookingsPage() {
   }
 
   const handleEditBooking = async (bookingId: string) => {
-    // For now, just navigate to an edit page or show a modal
-    console.log('Edit booking:', bookingId)
-    // TODO: Implement edit functionality
-    alert('Edit functionality will be implemented soon')
+    try {
+      const booking = await bookingsService.getBookingById(bookingId);
+      setEditBooking(booking);
+      setShowEdit(true);
+      console.log('Edit booking details:', bookingId);
+    } catch (error) {
+      toast.error('Failed to load booking for editing');
+    }
   }
 
-  const handleViewDetails = (bookingId: string) => {
-    // Navigate to booking details page
-    console.log('View booking details:', bookingId)
-    // TODO: Implement navigation to details page
-    alert('Booking details page will be implemented soon')
+  const handleEditSubmit = async (updatedData: { service_date: string; service_time: string; special_instructions: string }) => {
+    try {
+      if (!editBooking) {
+        toast.error('No booking selected for editing');
+        return;
+      }
+      await bookingsService.updateBooking(editBooking.id, updatedData);
+      toast.success('Booking updated!');
+      setShowEdit(false);
+      loadBookings();
+    } catch (error) {
+      toast.error('Failed to update booking');
+    }
+  }
+
+  const handleViewDetails = async (bookingId: string) => {
+    try {
+      const booking = await bookingsService.getBookingById(bookingId);
+      setSelectedBooking(booking);
+      setShowDetails(true);
+      // Navigate to booking details page
+      console.log('View booking details:', bookingId)
+
+    } catch (error) {
+      toast.error('Failed to load booking details');
+    }
+
   }
 
   const handleCreateBooking = () => {
@@ -147,6 +178,93 @@ function BookingsPage() {
     console.log('Navigating to services page')
     navigate({ to: '/services' })
   }
+
+  // Simple modal component
+  type ModalProps = {
+    open: boolean;
+    onClose: () => void;
+    title: string;
+    children: React.ReactNode;
+  };
+
+  const Modal: React.FC<ModalProps> = ({ open, onClose, title, children }) => {
+    if (!open) return null;
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+        <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative">
+          <button onClick={onClose} className="absolute top-2 right-2 text-gray-400 hover:text-gray-600">&times;</button>
+          <h2 className="text-xl font-bold mb-4">{title}</h2>
+          {children}
+        </div>
+      </div>
+    );
+  };
+
+  // Edit form for booking
+  type EditBookingFormProps = {
+    booking: Booking;
+    onSubmit: (updatedData: { service_date: string; service_time: string; license_plate: string; special_instructions: string }) => Promise<void>;
+    onCancel: () => void;
+  };
+
+  const EditBookingForm: React.FC<EditBookingFormProps> = ({ booking, onSubmit, onCancel }) => {
+    const [date, setDate] = useState(booking.service_date);
+    const [time, setTime] = useState(booking.service_time);
+    const [licensePlate, setLicensePlate] = useState(booking.vehicle_info?.license_plate || '');
+    const [specialInstructions, setSpecialInstructions] = useState(booking.specialInstructions || booking.special_instructions || '');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setLoading(true);
+      await onSubmit({
+        service_date: date,
+        service_time: time,
+        license_plate: licensePlate,
+        special_instructions: specialInstructions,
+      });
+      setLoading(false);
+    };
+
+    return (
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">Date</label>
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} className="border rounded px-2 py-1 w-full" required />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Time</label>
+          <input type="time" value={time} onChange={e => setTime(e.target.value)} className="border rounded px-2 py-1 w-full" required />
+        </div>
+        <div>
+          <label className='block text-sm font-medium mb-1'>License Plate</label>
+          <input type='text' value={licensePlate} onChange={e => setLicensePlate(e.target.value)} className='border rounded px-2 py-1 ' placeholder='Enter License plate' required></input>
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1">Special Instructions</label>
+          <textarea value={specialInstructions} onChange={e => setSpecialInstructions(e.target.value)} className="border rounded px-2 py-1 w-full" rows={3} />
+        </div>
+        <div className="flex justify-end space-x-2">
+          <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>Cancel</Button>
+          <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={loading}>{loading ? 'Saving...' : 'Save Changes'}</Button>
+        </div>
+      </form>
+    );
+  };
+
+  // Details modal content
+  const BookingDetails: React.FC<{ booking: Booking }> = ({ booking }) => (
+    <div className="space-y-2">
+      <div><strong>Service:</strong> {booking.service?.name}</div>
+      <div><strong>Date:</strong> {formatDate(booking.service_date)}</div>
+      <div><strong>Time:</strong> {booking.service_time}</div>
+      <div><strong>Status:</strong> {booking.status}</div>
+      <div><strong>Price:</strong> {formatPrice(Number(booking.total_amount))}</div>
+      {booking.specialInstructions && <div><strong>Special Instructions:</strong> {booking.specialInstructions}</div>}
+      {booking.special_instructions && !booking.specialInstructions && <div><strong>Special Instructions:</strong> {booking.special_instructions}</div>}
+      {booking.serviceProvider && <div><strong>Provider:</strong> {booking.serviceProvider.businessName}</div>}
+    </div>
+  );
 
   if (loading) {
     return (
@@ -252,7 +370,7 @@ function BookingsPage() {
 
                     <div className="flex items-center space-x-2">
                       <DollarSign className="h-4 w-4" />
-                      <span>{formatPrice(booking.totalAmount ?? booking.total_amount)}</span>
+                      <span>{formatPrice(Number(booking.totalAmount ?? booking.total_amount))}</span>
                     </div>
                   </div>
 
@@ -306,6 +424,16 @@ function BookingsPage() {
           ))
         )}
       </div>
+
+      {/* Details Modal */}
+      <Modal open={showDetails} onClose={() => setShowDetails(false)} title="Booking Details">
+        {selectedBooking && <BookingDetails booking={selectedBooking} />}
+      </Modal>
+
+      {/* Edit Modal */}
+      <Modal open={showEdit} onClose={() => setShowEdit(false)} title="Edit Booking">
+        {editBooking && <EditBookingForm booking={editBooking} onSubmit={handleEditSubmit} onCancel={() => setShowEdit(false)} />}
+      </Modal>
     </div>
   )
 }
