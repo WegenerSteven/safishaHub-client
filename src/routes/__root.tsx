@@ -9,7 +9,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import Header from '../components/Header'
 import { ModalProvider } from '../contexts/ModalContext'
 import { ThemeProvider } from '../components/theme/theme-provider'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from 'sonner'
 import { AuthProvider } from '../contexts/auth-context'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
@@ -18,6 +18,7 @@ import appCss from '../styles.css?url'
 import themeFixesCss from '../components/theme/theme-fixes.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import { NotificationProvider } from '@/contexts/notification-context.tsx'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -61,23 +62,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         defaultTheme="system"
         enableSystem
       >
+        <Toaster position="top-right" richColors />
         <ModalProvider>
           <AuthProvider>
-            <Header />
-            <Outlet />
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 3000,
-                style: {
-                  background: 'var(--background)',
-                  color: 'var(--foreground)',
-                  border: '1px solid var(--border)',
-                },
-              }}
-            />
-            <TanStackRouterDevtools />
-            <TanStackQueryLayout />
+            <NotificationProvider>
+              <Header />
+              <Outlet />
+              <TanStackRouterDevtools />
+              <TanStackQueryLayout />
+            </NotificationProvider>
           </AuthProvider>
         </ModalProvider>
       </ThemeProvider>
