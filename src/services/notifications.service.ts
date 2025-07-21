@@ -53,6 +53,14 @@ export class NotificationsService {
     }
   }
 
+  async getNotifications(){
+    return apiService.get('/notifications');
+  }
+
+  async markAsRead(id: string) {
+    return apiService.patch(`/notifications/${id}/read`);
+  }
+
   /**
    * Send an SMS notification (if configured)
    */
