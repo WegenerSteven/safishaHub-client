@@ -1,6 +1,6 @@
 import apiService from './api';
 import type { Booking } from '@/interfaces';
-import type { CreateBookingRequest, UpdateBookingRequest,BookingFilterParams  } from '@/interfaces/booking/Booking.interface';
+import type { CreateBookingRequest, UpdateBookingRequest, BookingFilterParams } from '@/interfaces/booking/Booking.interface';
 
 export class BookingsService {
   /**
@@ -29,12 +29,12 @@ export class BookingsService {
   async getMyBookings(): Promise<Booking[]> {
     try {
       console.log('Fetching user bookings');
-      
+
       // First try the user-specific endpoint, fallback to filtering all bookings
       try {
         const response = await apiService.get<Booking[] | { data: Booking[] }>('/bookings/my-bookings');
         console.log('API response for user bookings:', response);
-        
+
         // Handle both array and object with data property responses
         if (Array.isArray(response)) {
           return response;
@@ -66,14 +66,14 @@ export class BookingsService {
   async getProviderBookings(): Promise<Booking[]> {
     try {
       const response = await apiService.get<Booking[] | { data: Booking[] }>('/bookings/provider');
-      
+
       // Handle both array and object with data property responses
       if (Array.isArray(response)) {
         return response;
       } else if (response && typeof response === 'object' && 'data' in response && Array.isArray(response.data)) {
         return response.data;
       }
-      
+
       // If we can't determine the structure, log it and return empty array
       console.error('Unexpected provider bookings response format:', response);
       return [];
@@ -101,20 +101,20 @@ export class BookingsService {
   async createBooking(bookingData: CreateBookingRequest): Promise<Booking> {
     try {
       console.log('Creating booking with data:', JSON.stringify(bookingData));
-      
+
       // Ensure all required fields are present
       if (!bookingData.service_id) {
         throw new Error('Service ID is required');
       }
-      
+
       if (!bookingData.service_date) {
         throw new Error('Service date is required');
       }
-      
+
       if (!bookingData.service_time) {
         throw new Error('Service time is required');
       }
-      
+
       const response = await apiService.post<CreateBookingRequest, Booking>('/bookings', bookingData);
       console.log('Booking created successfully:', response);
       return response;
@@ -139,9 +139,9 @@ export class BookingsService {
   /**
    * Cancel a booking
    */
-  async cancelBooking(id: string): Promise<Booking> {
+  async cancelBooking(id: string, reason?: string): Promise<Booking> {
     try {
-      return await apiService.post<null, Booking>(`/bookings/${id}/cancel`);
+      return await apiService.patch<{ reason?: string }, Booking>(`/bookings/${id}/cancel`, { reason });
     } catch (error) {
       console.error(`Failed to cancel booking ${id}:`, error);
       throw error;
