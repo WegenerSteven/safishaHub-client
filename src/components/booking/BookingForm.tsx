@@ -1,17 +1,18 @@
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { BookingStatus, ServiceType } from '@/interfaces';
+// import { BookingStatus, ServiceType } from '@/interfaces';
 import { useAuth } from '@/contexts/auth-context';
 import { bookingsService, servicesService, notificationsService } from '@/services';
 import type { CreateBookingRequest } from '@/services/bookings.service';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { 
-  Calendar, 
-  Clock, 
-  Car, 
-  Info, 
+import {
+  Calendar,
+  Clock,
+  Car,
+  Info,
   CreditCard,
   MapPin,
   AlertCircle,
@@ -30,11 +31,11 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  
+
   // Service data
   const [service, setService] = useState<any>(null);
   const [serviceLoading, setServiceLoading] = useState(true);
-  
+
   // Form fields
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -44,7 +45,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleYear, setVehicleYear] = useState<number | undefined>(undefined);
   const [vehiclePlate, setVehiclePlate] = useState('');
-  
+
   // Load service details
   useEffect(() => {
     const loadService = async () => {
@@ -60,53 +61,53 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
         setServiceLoading(false);
       }
     };
-    
+
     loadService();
   }, [serviceId]);
-  
+
   // Check if user is authenticated
   useEffect(() => {
     if (!isAuthenticated) {
       setError('Please log in to book a service.');
     }
   }, [isAuthenticated]);
-  
+
   // Set minimum date to today
   const today = new Date().toISOString().split('T')[0];
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!isAuthenticated || !user) {
       setError('Please log in to book a service.');
-      alert('You need to be logged in to book a service. Please log in and try again.');
+      toast.error('You need to be logged in to book a service. Please log in and try again.');
       // Redirect to login page
       navigate({ to: '/login' });
       return;
     }
-    
+
     if (!service) {
       setError('Service details are not available.');
       return;
     }
-    
+
     // Form validation
     if (!date) {
       setError('Please select a service date.');
       return;
     }
-    
+
     if (!time) {
       setError('Please select a service time.');
       return;
     }
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       console.log('Current user:', user);
-      
+
       // Prepare booking data
       const bookingData: CreateBookingRequest = {
         user_id: user.id, // Make sure user.id exists
@@ -123,15 +124,15 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
           license_plate: vehiclePlate || undefined,
         }
       };
-      
+
       // Send booking request to API
       const result = await bookingsService.createBooking(bookingData);
-      
+
       // Send notifications to service provider
       try {
         // Get provider ID from service data
         const providerId = service.provider_id || service.provider?.id;
-        
+
         if (providerId) {
           // Send in-app notification
           await notificationsService.sendBookingNotification(
@@ -141,7 +142,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
             service.name,
             date
           );
-          
+
           // Send email notification if provider has email
           if (service.provider?.email) {
             await notificationsService.sendEmailNotification(
@@ -156,7 +157,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
               }
             );
           }
-          
+
           // Send SMS notification if provider has phone
           if (service.provider?.phone || service.provider?.business_phone) {
             const phone = service.provider?.phone || service.provider?.business_phone;
@@ -170,10 +171,11 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
         // Log but don't fail the booking process
         console.error('Failed to send notifications:', notificationError);
       }
-      
+
       // Handle success
       setSuccess('Booking created successfully! Redirecting to your bookings...');
-      
+      toast.success('Booking created successfully! Redirecting to your bookings...');
+
       // Call success callback if provided
       if (onSuccess) {
         onSuccess(result.id);
@@ -186,11 +188,12 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
     } catch (err: any) {
       console.error('Failed to create booking:', err);
       setError(err.message || 'Failed to create booking. Please try again.');
+      toast.error(err.message || 'Failed to create booking. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-  
+
   if (serviceLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-6">
@@ -199,7 +202,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
       </div>
     );
   }
-  
+
   if (!service) {
     return (
       <div className="p-6">
@@ -215,11 +218,11 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
       </div>
     );
   }
-  
+
   return (
     <div className="bg-white p-6 rounded-xl max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Book Service</h2>
-      
+
       {/* Service Summary */}
       <div className="mb-6 bg-blue-50 p-4 rounded-lg">
         <h3 className="font-semibold text-lg mb-2">{service.name}</h3>
@@ -232,7 +235,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
           <span>Duration: {service.duration_minutes} minutes</span>
         </div>
       </div>
-      
+
       {/* Error Message */}
       {error && (
         <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-4">
@@ -242,14 +245,14 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
           </div>
         </div>
       )}
-      
+
       {/* Success Message */}
       {success && (
         <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-4">
           <p>{success}</p>
         </div>
       )}
-      
+
       {/* Booking Form */}
       {isAuthenticated && !success && (
         <form onSubmit={handleSubmit}>
@@ -272,7 +275,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
                   Time <span className="text-red-500">*</span>
@@ -289,20 +292,20 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                 </div>
               </div>
             </div>
-            
+
             {/* Vehicle Information */}
             <div className="space-y-2">
               <h3 className="font-medium text-gray-800 flex items-center">
                 <Car className="h-4 w-4 mr-2" />
                 Vehicle Information
               </h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Vehicle Type <span className="text-red-500">*</span>
                   </label>
-                  <select 
+                  <select
                     className="rounded-md border border-gray-300 py-2 px-3 bg-white text-gray-700 w-full"
                     value={vehicleType}
                     onChange={(e) => setVehicleType(e.target.value)}
@@ -317,7 +320,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                     <option value="other">Other</option>
                   </select>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Make
@@ -330,7 +333,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                   />
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -343,7 +346,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                     placeholder="Camry, Civic, etc."
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Year
@@ -358,7 +361,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                   />
                 </div>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   License Plate
@@ -371,7 +374,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                 />
               </div>
             </div>
-            
+
             {/* Special Instructions */}
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -384,19 +387,19 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                 rows={3}
               />
             </div>
-            
+
             {/* Form Actions */}
             <div className="flex items-center justify-end space-x-4 mt-6">
-              <Button 
-                type="button" 
-                onClick={onClose} 
+              <Button
+                type="button"
+                onClick={onClose}
                 variant="outline"
                 disabled={loading}
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={loading || !isAuthenticated}
                 className="bg-blue-600 hover:bg-blue-700"
               >
@@ -413,12 +416,12 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
           </div>
         </form>
       )}
-      
+
       {/* Login Prompt */}
       {!isAuthenticated && (
         <div className="mt-4">
-          <Button 
-            onClick={() => navigate({ to: '/login', search: { returnTo: `/services` } })} 
+          <Button
+            onClick={() => navigate({ to: '/login', search: { returnTo: `/services` } })}
             className="w-full bg-blue-600 hover:bg-blue-700"
           >
             Login to Book This Service
