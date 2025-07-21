@@ -15,8 +15,8 @@ function ProfilePage() {
   const [user, setUser] = useState<AuthUser | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
     address: '',
@@ -27,8 +27,8 @@ function ProfilePage() {
     setUser(currentUser)
     if (currentUser) {
       setFormData({
-        firstName: currentUser.firstName || '',
-        lastName: currentUser.lastName || '',
+        first_name: currentUser.first_name || '',
+        last_name: currentUser.last_name || '',
         email: currentUser.email || '',
         phone: '', // Would come from API
         address: '', // Would come from API
@@ -46,8 +46,8 @@ function ProfilePage() {
   const handleCancel = () => {
     if (user) {
       setFormData({
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
+        first_name: user.first_name || '',
+        last_name: user.last_name || '',
         email: user.email || '',
         phone: '',
         address: '',
@@ -105,8 +105,8 @@ function ProfilePage() {
           <div className="flex items-center space-x-4">
             <div className="relative">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold">
-                {user?.firstName?.[0] || 'U'}
-                {user?.lastName?.[0] || ''}
+                {user?.first_name?.[0] || 'U'}
+                {user?.last_name?.[0] || ''}
               </div>
               {isEditing && (
                 <button className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50">
@@ -116,7 +116,7 @@ function ProfilePage() {
             </div>
             <div className="text-white">
               <h2 className="text-xl font-semibold">
-                {user.firstName} {user.lastName}
+                {user.first_name} {user.last_name}
               </h2>
               <p className="text-blue-100 capitalize">
                 {user.role?.replace('_', ' ') || 'User'}
@@ -137,24 +137,24 @@ function ProfilePage() {
             {/* First Name */}
             <div>
               <Label
-                htmlFor="firstName"
+                htmlFor="first_name"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 First Name
               </Label>
               {isEditing ? (
                 <Input
-                  id="firstName"
-                  value={formData.firstName}
+                  id="first_name"
+                  value={formData.first_name}
                   onChange={(e) =>
-                    setFormData({ ...formData, firstName: e.target.value })
+                    setFormData({ ...formData, first_name: e.target.value })
                   }
                   placeholder="Enter your first name"
                 />
               ) : (
                 <div className="flex items-center space-x-2 py-2">
                   <User className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-900">{user?.firstName || 'Not provided'}</span>
+                  <span className="text-gray-900">{user?.first_name || 'Not provided'}</span>
                 </div>
               )}
             </div>
@@ -162,24 +162,24 @@ function ProfilePage() {
             {/* Last Name */}
             <div>
               <Label
-                htmlFor="lastName"
+                htmlFor="last_name"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Last Name
               </Label>
               {isEditing ? (
                 <Input
-                  id="lastName"
-                  value={formData.lastName}
+                  id="last_name"
+                  value={formData.last_name}
                   onChange={(e) =>
-                    setFormData({ ...formData, lastName: e.target.value })
+                    setFormData({ ...formData, last_name: e.target.value })
                   }
                   placeholder="Enter your last name"
                 />
               ) : (
                 <div className="flex items-center space-x-2 py-2">
                   <User className="h-4 w-4 text-gray-400" />
-                  <span className="text-gray-900">{user?.lastName || 'Not provided'}</span>
+                  <span className="text-gray-900">{user?.last_name || 'Not provided'}</span>
                 </div>
               )}
             </div>
