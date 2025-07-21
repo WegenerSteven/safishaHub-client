@@ -146,7 +146,9 @@ export function BookingManagement() {
   )
 
   // Status badge color mapping
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (
+    status: string
+  ): "default" | "destructive" | "outline" | "secondary" | "success" => {
     switch (status) {
       case BookingStatus.PENDING:
         return 'secondary'
@@ -482,7 +484,7 @@ interface BookingsTableProps {
   onUpdateStatus: (booking: Booking) => void;
   onCancelBooking: (id: string) => void;
   formatDate: (date: string) => string;
-  getStatusBadgeVariant: (status: string) => string;
+  getStatusBadgeVariant: (status: string) => "default" | "destructive" | "outline" | "secondary" | "success";
 }
 
 function BookingsTable({ 
