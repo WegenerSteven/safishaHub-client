@@ -1,71 +1,55 @@
 import type { Business } from '../business/Business.interface';
 import type { User } from '../auth/User.interface';
 
-export interface Service {
+ export interface Service {
   id: string;
   business_id: string;
   category_id: string;
-  location_id?: string;
   name: string;
   description?: string;
-  short_description?: string;
-  base_price: string; // API returns as string
-  price?: number; // For backward compatibility
-  currency?: string;
-  discounted_price?: string;
-  duration_minutes: number;
+  category_type: CategoryType;
   service_type: ServiceType;
-  vehicle_type: VehicleType; // API returns single vehicle_type
-  vehicle_types?: VehicleType[]; // For backward compatibility
-  status: ServiceStatus;
-  category?: ServiceCategory;
-  is_active: boolean;
-  is_available: boolean;
-  images?: string[];
+  vehicle_type: VehicleType;
+  base_price: number;
+  duration_minutes: number;
   image_url?: string;
-  features?: string[];
-  requirements?: string[];
-  booking_count?: number;
-  average_rating?: string;
-  review_count?: number;
-  cancellation_policy?: string;
-  refund_policy?: string;
-  terms_conditions?: string;
-  metadata?: Record<string, any>;
-  provider?: User;
-  business?: Business;
+  is_available: boolean;
   created_at: string;
   updated_at: string;
-}
 
+  // Optional nested objects for UI convenience
+  category?: ServiceCategory;
+  business?: Business;
+  provider?: User;
+  addons?: ServiceAddOn[];
+}
+export interface ServiceAddOn {
+  id: string;
+  service_id: string;
+  name: string;
+  description?: string;
+  price: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+
+  // Optional nested objects for UI convenience
+  service?: Service;
+}
 export interface ServiceCategory {
+  
   id: string;
   name: string;
   description?: string;
   icon?: string;
-  color?: string;
-  sort_order: number;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface ServicePricing {
   id?: string;
   service_id?: string;
-  vehicle_type: VehicleType;
-  base_price: number;
-  currency: string;
-  pricing_type: PricingType;
-  min_price?: number;
-  max_price?: number;
-  price_per_hour?: number;
-  discount_percentage?: number;
-  is_active: boolean;
-  effective_from: string;
-  effective_until?: string;
-  created_at: string;
-  updated_at: string;
+  vehicle_type: string;
+  price: number;
+  duration_minutes: number;
 }
 
 export enum ServiceType {
@@ -82,9 +66,19 @@ export enum VehicleType {
   HATCHBACK = 'hatchback',
   TRUCK = 'truck',
   VAN = 'van',
+  BUS = 'bus',
   MOTORCYCLE = 'motorcycle',
   LUXURY = 'luxury',
   SPORTS = 'sports',
+}
+
+export enum CategoryType {
+  CAR_WASH = 'car_wash',
+  DETAILING = 'detailing',
+  MAINTENANCE = 'maintenance',
+  REPAIR = 'repair',
+  TIRE_SERVICES = 'tire_services',
+  OTHERS = 'others',
 }
 
 export enum ServiceStatus {
@@ -94,7 +88,7 @@ export enum ServiceStatus {
   MAINTENANCE = 'maintenance',
 }
 
-export enum PricingType {
+export enum PricingTier {
   FIXED = 'fixed',
   HOURLY = 'hourly',
   TIERED = 'tiered',
@@ -104,22 +98,16 @@ export enum PricingType {
 export interface CreateServiceRequest {
   business_id: string;
   category_id: string;
-  location_id?: string;
   name: string;
   description?: string;
-  price: number;
-  currency?: string;
+  base_price: number;
   duration_minutes: number;
   service_type: ServiceType;
   vehicle_types: VehicleType[];
-  status?: ServiceStatus;
+  // status?: ServiceStatus;
   is_available?: boolean;
+  image_url?: string;
   images?: string[];
-  features?: string[];
-  requirements?: string[];
-  cancellation_policy?: string;
-  refund_policy?: string;
-  terms_conditions?: string;
   metadata?: Record<string, any>;
 }
 

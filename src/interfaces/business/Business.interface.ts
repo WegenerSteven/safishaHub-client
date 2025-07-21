@@ -15,7 +15,7 @@ export interface Business {
   phone: string;
   email: string;
   image?: string;
-  // rating: number;
+  rating?: number;
   // total_services: number;
   // total_reviews: number;
   is_verified?: boolean;
