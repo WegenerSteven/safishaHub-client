@@ -7,6 +7,7 @@ import {
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import Header from '../components/Header'
+import AIChatbot from '../components/AIChatbot';
 import { ModalProvider } from '../contexts/ModalContext'
 import { ThemeProvider } from '../components/theme/theme-provider'
 import { Toaster } from 'sonner'
@@ -70,6 +71,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
               <Outlet />
               <TanStackRouterDevtools />
               <TanStackQueryLayout />
+              {/* Add AIChatbot globally (client-only) */}
+              {typeof window !== 'undefined' && <AIChatbot />}
             </NotificationProvider>
           </AuthProvider>
         </ModalProvider>
