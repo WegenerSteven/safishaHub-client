@@ -436,4 +436,4 @@ function BookingsPage() {
       </Modal>
     </div>
   )
-}
+ }
