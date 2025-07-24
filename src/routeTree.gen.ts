@@ -23,6 +23,7 @@ import { Route as ServiceProviderBookingsRouteImport } from './routes/service-pr
 import { Route as DashboardProviderBookingsRouteImport } from './routes/dashboard/provider-bookings'
 import { Route as DashboardProviderRouteImport } from './routes/dashboard/provider'
 import { Route as DashboardProfileRouteImport } from './routes/dashboard/profile'
+import { Route as DashboardPaymentsRouteImport } from './routes/dashboard/payments'
 import { Route as DashboardBookingsRouteImport } from './routes/dashboard/bookings'
 import { Route as DashboardServicesManageRouteImport } from './routes/dashboard/services/manage'
 import { Route as DashboardBusinessRegisterRouteImport } from './routes/dashboard/business/register'
@@ -98,6 +99,11 @@ const DashboardProfileRoute = DashboardProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPaymentsRoute = DashboardPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardBookingsRoute = DashboardBookingsRouteImport.update({
   id: '/bookings',
   path: '/bookings',
@@ -126,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
+  '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/provider': typeof DashboardProviderRoute
   '/dashboard/provider-bookings': typeof DashboardProviderBookingsRoute
@@ -144,6 +151,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
+  '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/provider': typeof DashboardProviderRoute
   '/dashboard/provider-bookings': typeof DashboardProviderBookingsRoute
@@ -164,6 +172,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/services': typeof ServicesRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
+  '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
   '/dashboard/provider': typeof DashboardProviderRoute
   '/dashboard/provider-bookings': typeof DashboardProviderBookingsRoute
@@ -185,6 +194,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/services'
     | '/dashboard/bookings'
+    | '/dashboard/payments'
     | '/dashboard/profile'
     | '/dashboard/provider'
     | '/dashboard/provider-bookings'
@@ -203,6 +213,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/services'
     | '/dashboard/bookings'
+    | '/dashboard/payments'
     | '/dashboard/profile'
     | '/dashboard/provider'
     | '/dashboard/provider-bookings'
@@ -222,6 +233,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/services'
     | '/dashboard/bookings'
+    | '/dashboard/payments'
     | '/dashboard/profile'
     | '/dashboard/provider'
     | '/dashboard/provider-bookings'
@@ -344,6 +356,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardProfileRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/payments': {
+      id: '/dashboard/payments'
+      path: '/payments'
+      fullPath: '/dashboard/payments'
+      preLoaderRoute: typeof DashboardPaymentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/bookings': {
       id: '/dashboard/bookings'
       path: '/bookings'
@@ -370,6 +389,7 @@ declare module '@tanstack/react-router' {
 
 interface DashboardRouteChildren {
   DashboardBookingsRoute: typeof DashboardBookingsRoute
+  DashboardPaymentsRoute: typeof DashboardPaymentsRoute
   DashboardProfileRoute: typeof DashboardProfileRoute
   DashboardProviderRoute: typeof DashboardProviderRoute
   DashboardProviderBookingsRoute: typeof DashboardProviderBookingsRoute
@@ -380,6 +400,7 @@ interface DashboardRouteChildren {
 
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardBookingsRoute: DashboardBookingsRoute,
+  DashboardPaymentsRoute: DashboardPaymentsRoute,
   DashboardProfileRoute: DashboardProfileRoute,
   DashboardProviderRoute: DashboardProviderRoute,
   DashboardProviderBookingsRoute: DashboardProviderBookingsRoute,
