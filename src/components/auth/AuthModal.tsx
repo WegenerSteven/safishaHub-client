@@ -1,3 +1,4 @@
+import React from 'react';
 import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
 import { useNavigate } from '@tanstack/react-router'
@@ -11,20 +12,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useModal } from '@/contexts/ModalContext'
 
 export function AuthModal() {
-  const { isLoginOpen, isRegisterOpen, closeAll } = useModal()
-  const navigate = useNavigate()
-  const isOpen = isLoginOpen || isRegisterOpen
-  const defaultTab = isLoginOpen ? 'login' : 'register'
+  const { isLoginOpen, isRegisterOpen, closeAll } = useModal();
+  const navigate = useNavigate();
+  const isOpen = isLoginOpen || isRegisterOpen;
+  const defaultTab = isLoginOpen ? 'login' : 'register';
+
+  // Track open state to prevent forced re-open on validation error
+  const [modalOpen, setModalOpen] = React.useState(isOpen);
+  React.useEffect(() => {
+    setModalOpen(isOpen);
+  }, [isOpen]);
 
   const handleSuccess = () => {
-    closeAll()
-    // Don't dispatch auth-change here as it's already handled in auth-context
-    // Navigate to dashboard after modal is closed
-    navigate({ to: '/dashboard' })
-  }
+    setModalOpen(false);
+    closeAll();
+    navigate({ to: '/dashboard' });
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setModalOpen(open);
+    if (!open) closeAll();
+  };
 
   return (
-    <Dialog open={isOpen} onOpenChange={closeAll}>
+    <Dialog open={modalOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[480px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
@@ -52,5 +63,5 @@ export function AuthModal() {
         </Tabs>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
