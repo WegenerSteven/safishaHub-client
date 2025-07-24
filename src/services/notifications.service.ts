@@ -58,7 +58,7 @@ export class NotificationsService {
   }
 
   async markAsRead(id: string) {
-    return apiService.patch(`/notifications/${id}/read`);
+    return apiService.patch(`/notifications/${id}`, { status: 'read' });
   }
 
   /**
