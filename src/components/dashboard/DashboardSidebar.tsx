@@ -168,8 +168,8 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
                   <Link
                     to={item.href}
                     className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${item.current
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                       }`}
                     onClick={() => setSidebarOpen(false)}
                   >
@@ -208,17 +208,17 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
         </div>
       </div>
 
-      {/* Desktop sidebar */}
-      <div className="hidden lg:fixed lg:inset-y-0 lg:flex lg:w-64 lg:flex-col lg:z-50">
-        <div className="flex flex-col flex-grow bg-card shadow-lg border-r border-border">
-          <div className="flex items-center justify-center p-6 border-b border-border">
+      {/* Desktop sidebar - starts below header */}
+      <div className="hidden lg:fixed lg:left-0 lg:top- lg:h-[calc(96vh-4rem)] lg:w-64 lg:flex lg:flex-col lg:z-50">
+        <div className="flex flex-col flex-grow bg-card shadow-lg border-r border-border h-full">
+          {/* <div className="flex items-center justify-center p-6 border-b border-border">
             <div className="flex items-center space-x-2">
               <Car className="h-8 w-8 text-blue-600" />
               <span className="text-xl font-bold text-foreground">
                 SafishaHub
               </span>
             </div>
-          </div>
+          </div> */}
 
           <nav className="flex-1 p-4">
             <ul className="space-y-2">
@@ -227,8 +227,8 @@ export default function DashboardSidebar({ children }: DashboardSidebarProps) {
                   <Link
                     to={item.href}
                     className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${item.current
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                       }`}
                   >
                     <item.icon className="mr-3 h-5 w-5" />
