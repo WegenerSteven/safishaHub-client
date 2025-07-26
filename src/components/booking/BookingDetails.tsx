@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { BookingStatus } from '@/interfaces';
 import { useAuth } from '@/contexts/auth-context';
@@ -9,7 +9,6 @@ import {
   Clock, 
   Car, 
   CreditCard,
-  MapPin,
   AlertCircle,
   CheckCircle,
   XCircle,
