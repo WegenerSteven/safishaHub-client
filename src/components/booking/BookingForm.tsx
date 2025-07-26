@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 // import { BookingStatus, ServiceType } from '@/interfaces';
 import { useAuth } from '@/contexts/auth-context';
 import { bookingsService, servicesService, notificationsService } from '@/services';
-import type { CreateBookingRequest } from '@/services/bookings.service';
+import type { CreateBookingRequest } from '../../interfaces/booking/Booking.interface';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -12,12 +12,13 @@ import {
   Calendar,
   Clock,
   Car,
-  Info,
+
   CreditCard,
-  MapPin,
   AlertCircle,
   Loader2
 } from 'lucide-react';
+import { promise } from 'zod';
+import { initializePayStackPayment } from '@/services/payment.service';
 
 interface BookingFormProps {
   serviceId: string;
@@ -45,6 +46,31 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [vehicleModel, setVehicleModel] = useState('');
   const [vehicleYear, setVehicleYear] = useState<number | undefined>(undefined);
   const [vehiclePlate, setVehiclePlate] = useState('');
+
+  const [paymentVerified, setPaymentVerified] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+
+  //handle payment
+  const handlePaymentRedirect = async () =>{
+    setPaying(true);
+    setPaymentError(null);
+    try{
+      const paymentInit = await initializePayStackPayment(
+        parseFloat(service.base_price || '0'),
+        user.email,
+        {bookingId: serviceId, userId: user.id}
+      );
+      window.open(paymentInit.authorization_url, '_blank', 'noopener, noreferrer');
+    } catch(err: any){
+      setPaymentError('Failed to initialize payment. Please try again.');
+      toast.error('Payment initialization failed.');
+    } finally{
+      setPaying(false);
+    }
+  }
+
 
   // Load service details
   useEffect(() => {
@@ -387,6 +413,32 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
                 rows={3}
               />
             </div>
+            {/**Payment section */}
+            <div className='space-y-2'>
+              <label className='block text-sm font-medium text-gray-700'>
+                Payment
+              </label>
+              {paymentVerified ? (
+                <div className='flex items-center text-green-600'>
+                  <CreditCard className='h-5 w-5 mr-2'/>
+                  Payment verified. You can now confirm your booking.
+                  </div>
+              ) : (
+                <Button type='button' onClick={handlePaymentRedirect} disabled={paying} className='bg-green-600 hover:bg-green-700'>
+                  {paying ? (
+                    <>
+                    <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                    Processing Payment...
+                    </>
+                  ):(
+                    'Pay Now'
+                  )}
+                </Button>
+              )}
+              {paymentError &&(
+                <div className='text-red-600 text-sm mt-2'>{paymentError}</div>
+              )}
+            </div>
 
             {/* Form Actions */}
             <div className="flex items-center justify-end space-x-4 mt-6">
@@ -400,7 +452,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
               </Button>
               <Button
                 type="submit"
-                disabled={loading || !isAuthenticated}
+                disabled={loading || !isAuthenticated || !paymentVerified}
                 className="bg-blue-600 hover:bg-blue-700"
               >
                 {loading ? (
