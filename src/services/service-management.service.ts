@@ -1,4 +1,5 @@
 import api, { apiService } from './api';
+import type { AxiosResponse } from 'axios';
 import type { ServiceCategory } from '../interfaces/service/Service.interface';
 // import type { Service } from '../interfaces/service/Service.interface';
 // import type { ServicePricing } from '../interfaces/service/Service.interface';
@@ -26,18 +27,20 @@ interface ApiResponse<T> {
   message: string;
   data: T;
 }
-interface SingleServiceResponse extends ApiResponse<Service>{}
-interface ServiceListResponse extends ApiResponse<Service[]>{}
-interface CategoriesResponse extends ApiResponse<ServiceCategory[]>{}
-
 
 
 export const serviceManagementService = {
   // Get all services for the provider
   async getProviderServices(): Promise<Service[]> {
     try {
-      const response = await api.get<ApiResponse<ServiceListResponse>>('/services/provider');
-      return response.data.data || [];
+      const response: AxiosResponse<ApiResponse<Service[]>> = await api.get('/services/provider');
+      if (Array.isArray(response.data)) {
+        return response.data;
+      }
+      if (response.data && Array.isArray(response.data.data)) {
+        return response.data.data;
+      }
+      return [];
     } catch (error) {
       console.error('Error fetching provider services:', error);
       return [];
@@ -47,8 +50,14 @@ export const serviceManagementService = {
   // Get service by ID
   async getServiceById(id: string): Promise<Service | null> {
     try {
-      const response = await api.get<ApiResponse<SingleServiceResponse>>(`/services/${id}`);
-      return response.data.data;
+      const response: AxiosResponse<ApiResponse<Service>> = await api.get(`/services/${id}`);
+      if (response.data && typeof response.data.data === 'object' && 'category_id' in response.data.data) {
+        return response.data.data as Service;
+      }
+      if (response.data && 'data' in response.data && typeof (response.data as any).data === 'object') {
+        return (response.data as any).data as Service;
+      }
+      return null;
     } catch (error) {
       console.error(`Error fetching service ${id}:`, error);
       return null;
@@ -58,16 +67,23 @@ export const serviceManagementService = {
   // Create a new service (supports FormData for image upload)
   async createService(serviceData: FormData | Partial<Service>): Promise<Service> {
     try {
-      const response = await apiService.post<FormData | Partial<Service>, ApiResponse<SingleServiceResponse>>('/services', serviceData, {
+      const response: AxiosResponse<ApiResponse<Service>> = await apiService.post('/services', serviceData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
-      return response.data.data;
+      if (response.data && typeof response.data.data === 'object' && 'category_id' in response.data.data) {
+        return response.data.data as Service;
+      }
+      if (response.data && 'data' in response.data && typeof (response.data as any).data === 'object') {
+        return (response.data as any).data as Service;
+      }
+      throw new Error(response.data?.message || 'Failed to create service');
     } catch (error: any) {
       if (error?.response) {
+        const msg = error.response.data?.message || error.response.data?.status || 'Backend error';
         console.error('Backend error response:', error.response);
-        throw new Error(`Error creating service: ${error.response.data.status}`);
+        throw new Error(`Error creating service: ${msg}`);
       } else {
         console.error('Network Error creating service:', error);
         throw new Error('Network error. Please check your connection.');
@@ -100,27 +116,54 @@ export const serviceManagementService = {
   // Update a service
   async updateService(id: string, serviceData: FormData | Partial<Service>): Promise<Service> {
     try {
-      //handle formData
+      let response: AxiosResponse<any>;
       if (serviceData instanceof FormData) {
-        const response = await api.patch<FormData, ApiResponse<SingleServiceResponse>>(`/services/${id}`, serviceData, {
+        response = await api.patch(`/services/${id}`, serviceData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        return response.data.data;
       } else {
-        const response = await api.patch<Partial<Service>, ApiResponse<SingleServiceResponse>>(`/services/${id}`, serviceData);
-        return response.data.data;
+        response = await api.patch(`/services/${id}`, serviceData);
       }
+      // Log the full response for diagnosis
+      console.log('updateService response:', response);
+      // Accept direct service object
+      if (response.data && typeof response.data === 'object' && 'id' in response.data && 'name' in response.data) {
+        return response.data as Service;
+      }
+      // Accept wrapped service object
+      if (response.data && typeof response.data.data === 'object' && response.data.data !== null) {
+        return response.data.data as Service;
+      }
+      // Accept nested data (sometimes backend double-wraps)
+      if (response.data && response.data.data && typeof response.data.data.data === 'object') {
+        return response.data.data.data as Service;
+      }
+      // Accept if response.data is not null and has expected keys
+      if (response.data && typeof response.data === 'object' && 'category_id' in response.data) {
+        return response.data as Service;
+      }
+      // Accept success message only (no service object)
+      if (response.data && (response.data.success === true || response.data.message)) {
+        // Return a minimal Service object or null if needed
+        return { id, ...serviceData } as Service;
+      }
+      // Log unexpected response
+      console.error('Unexpected updateService response format:', response.data);
+      throw new Error(response.data?.message || 'Failed to update service: Unexpected response format');
     } catch (error: any) {
       if (error?.response) {
         console.error('Backend error response:', error.response.data);
         throw new Error(
           error.response.data.message || `Failed to update service: ${error.response.status}`
         );
+      } else if (error instanceof Error) {
+        console.error('Network or unknown error updating service:', error.message);
+        throw new Error(error.message || 'Network error. Please check your connection.');
       } else {
-        console.error('Network error updating service:', error);
-        throw new Error('Network error. Please check your connection.');
+        console.error('Unknown error updating service:', error);
+        throw new Error('Unknown error occurred while updating service.');
       }
     }
   },
@@ -145,20 +188,21 @@ export const serviceManagementService = {
   // Get all service categories
   async getCategories(): Promise<ServiceCategory[]> {
     try {
-      const response = await api.get<ServiceCategory[]>('/services/categories');
-
-      // Handle different response structures
+      const response: AxiosResponse<any> = await api.get('/services/categories');
       if (Array.isArray(response.data)) {
         return response.data;
-      } else if (Array.isArray(response.data?.data)) {
-        return response.data.data;
-      } else {
-        console.warn('Unexpected categories response format:', response.data);
-        return [];
       }
+      if (response.data && Array.isArray(response.data.data)) {
+        return response.data.data;
+      }
+      if (response.data && Array.isArray(response.data.categories)) {
+        return response.data.categories;
+      }
+      console.warn('Unexpected categories response format:', response.data);
+      return [];
     } catch (error) {
       console.error('Error fetching categories:', error);
-      return [];
+      throw new Error('Failed to fetch service categories');
     }
-  }
+  },
 };
