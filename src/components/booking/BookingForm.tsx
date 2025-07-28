@@ -17,8 +17,7 @@ import {
   AlertCircle,
   Loader2
 } from 'lucide-react';
-import { promise } from 'zod';
-import { initializePayStackPayment } from '@/services/payment.service';
+import { initializePayStackPayment, verifyPayStackPayment } from '@/services/payment.service';
 
 interface BookingFormProps {
   serviceId: string;
@@ -37,6 +36,8 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [service, setService] = useState<any>(null);
   const [serviceLoading, setServiceLoading] = useState(true);
 
+  const [booking, setBooking] = useState<any>(null);
+
   // Form fields
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -50,23 +51,59 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [paymentVerified, setPaymentVerified] = useState(false);
   const [paying, setPaying] = useState(false);
   const [paymentError, setPaymentError] = useState<string | null>(null);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
 
 
-  //handle payment
-  const handlePaymentRedirect = async () =>{
+  //handle payment with automatic verification
+  const handlePaymentRedirect = async () => {
     setPaying(true);
     setPaymentError(null);
-    try{
+    try {
+      if (!user || !user.email || !booking) {
+        setPaymentError('User information is missing. Please log in again.');
+        toast.error('User information is missing. Please log in again.');
+        setPaying(false);
+        return;
+      }
       const paymentInit = await initializePayStackPayment(
         parseFloat(service.base_price || '0'),
         user.email,
-        {bookingId: serviceId, userId: user.id}
+        { bookingId: booking.id, userId: user.id }
       );
-      window.open(paymentInit.authorization_url, '_blank', 'noopener, noreferrer');
-    } catch(err: any){
+      // Store reference for verification
+      localStorage.setItem('payStackRef', paymentInit.reference);
+      // Open Paystack in new tab
+      const paystackWindow = window.open(paymentInit.authorization_url, '_blank', 'noopener,noreferrer');
+
+      // Poll for payment verification every 2 seconds
+      setVerifyingPayment(true);
+      let pollCount = 0;
+      const maxPolls = 30;
+      const pollInterval = setInterval(async () => {
+        pollCount++;
+        try {
+          const result = await verifyPayStackPayment(paymentInit.reference, booking.id, paymentInit.amount);
+          if (result.status === 'success') {
+            setPaymentVerified(true);
+            setVerifyingPayment(false);
+            toast.success('Payment verified! You can now confirm your booking.');
+            clearInterval(pollInterval);
+            if (paystackWindow) paystackWindow.close();
+          }
+        } catch (err) {
+          // Ignore errors during polling
+        }
+        if (pollCount >= maxPolls) {
+          setVerifyingPayment(false);
+          clearInterval(pollInterval);
+          toast.error('Payment verification timed out. Please check your payment or try again.');
+        }
+      }, 3000);
+    } catch (err: any) {
       setPaymentError('Failed to initialize payment. Please try again.');
       toast.error('Payment initialization failed.');
-    } finally{
+      setVerifyingPayment(false);
+    } finally {
       setPaying(false);
     }
   }
@@ -153,11 +190,12 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
 
       // Send booking request to API
       const result = await bookingsService.createBooking(bookingData);
-
+      setBooking(result);
+      console.log('Booking created:', result);
       // Send notifications to service provider
       try {
         // Get provider ID from service data
-        const providerId = service.provider_id || service.provider?.id;
+        const providerId = service.business_id || service.provider?.id;
 
         if (providerId) {
           // Send in-app notification
@@ -420,22 +458,27 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
               </label>
               {paymentVerified ? (
                 <div className='flex items-center text-green-600'>
-                  <CreditCard className='h-5 w-5 mr-2'/>
+                  <CreditCard className='h-5 w-5 mr-2' />
                   Payment verified. You can now confirm your booking.
-                  </div>
+                </div>
+              ) : verifyingPayment ? (
+                <div className='flex items-center text-blue-600'>
+                  <Loader2 className='h-5 w-5 mr-2 animate-spin' />
+                  Verifying payment... Please wait for confirmation from Paystack.
+                </div>
               ) : (
                 <Button type='button' onClick={handlePaymentRedirect} disabled={paying} className='bg-green-600 hover:bg-green-700'>
                   {paying ? (
                     <>
-                    <Loader2 className='h-4 w-4 mr-2 animate-spin' />
-                    Processing Payment...
+                      <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                      Processing Payment...
                     </>
-                  ):(
+                  ) : (
                     'Pay Now'
                   )}
                 </Button>
               )}
-              {paymentError &&(
+              {paymentError && (
                 <div className='text-red-600 text-sm mt-2'>{paymentError}</div>
               )}
             </div>

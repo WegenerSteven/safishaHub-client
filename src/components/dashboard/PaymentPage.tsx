@@ -1,164 +1,128 @@
-import { useState } from "react";
-import { CreditCard, Smartphone, DollarSign, Bitcoin } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { getMyPayments, getPaymentReceipt } from "@/services/payment.service";
+import { bookingsService } from "@/services/bookings.service";
+import type { Payment } from "@/interfaces/payment/Payment.interface";
 
-// Payment methods config
-const paymentMethods = [
-  { key: "credit", label: "Credit Card", icon: <CreditCard /> },
-  { key: "mpesa", label: "M-Pesa", icon: <Smartphone /> },
-  { key: "paypal", label: "PayPal", icon: <DollarSign /> },
-  { key: "crypto", label: "Crypto", icon: <Bitcoin /> },
-];
-
-// Placeholder payment history
-const paymentHistory = [
-  { id: 1, date: "2025-07-10", amount: 1500, method: "M-Pesa", status: "Paid" },
-  { id: 2, date: "2025-06-28", amount: 1200, method: "Credit Card", status: "Paid" },
-];
-
-// Payment form for each method
-function PaymentForm({ method }: { method: string }) {
-  switch (method) {
-    case "credit":
-      return (
-        <div className="mt-4">
-          <label className="block mb-1 font-medium">Card Number</label>
-          <input className="input" type="text" placeholder="1234 5678 9012 3456" />
-          <div className="flex gap-2 mt-2">
-            <input className="input" type="text" placeholder="MM/YY" />
-            <input className="input" type="text" placeholder="CVV" />
-          </div>
-        </div>
-      );
-    case "mpesa":
-      return (
-        <div className="mt-4">
-          <label className="block mb-1 font-medium">M-Pesa Phone Number</label>
-          <input className="input" type="text" placeholder="07XXXXXXXX" />
-        </div>
-      );
-    case "paypal":
-      return (
-        <div className="mt-4">
-          <label className="block mb-1 font-medium">PayPal Email</label>
-          <input className="input" type="email" placeholder="you@email.com" />
-        </div>
-      );
-    case "crypto":
-      return (
-        <div className="mt-4">
-          <label className="block mb-1 font-medium">Crypto Wallet Address</label>
-          <input className="input" type="text" placeholder="Wallet Address" />
-        </div>
-      );
-    default:
-      return null;
-  }
-}
+// ...existing code...
 
 export function PaymentPage() {
-  const [selected, setSelected] = useState("credit");
-  const [paid, setPaid] = useState(false);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [bookingSummaries, setBookingSummaries] = useState<Record<string, any>>({});
 
-  // Placeholder booking summary
-  const booking = {
-    service: "Deluxe Car Wash",
-    date: "2025-07-24",
-    time: "10:00 AM",
-    price: 1500,
-    vehicle: "Toyota Axio",
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        setLoading(true);
+        const data = await getMyPayments();
+        setPayments(data);
+        // Fetch booking summaries for each payment
+        const summaries: Record<string, any> = {};
+        for (const payment of data) {
+          try {
+            const booking = await bookingsService.getBookingById(payment.booking_id);
+            summaries[payment.id] = booking;
+          } catch { }
+        }
+        setBookingSummaries(summaries);
+      } catch (err: any) {
+        setError(err.message || "Failed to load payments");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPayments();
+  }, []);
+
+  const handleDownloadReceipt = async (paymentId: string) => {
+    setDownloadingId(paymentId);
+    try {
+      const blob = await getPaymentReceipt(paymentId);
+      const url = window.URL.createObjectURL(blob as Blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `payment-receipt-${paymentId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setError('Failed to download receipt');
+    } finally {
+      setDownloadingId(null);
+    }
   };
-
-  function handlePay(e: React.FormEvent) {
-    e.preventDefault();
-    // TODO: Integrate with backend/payment API
-    setPaid(true);
-  }
 
   return (
     <div className="max-w-2xl mx-auto p-4 w-full">
-      <h2 className="text-2xl font-bold mb-4">Complete Your Payment</h2>
-      <div className="mb-6">
-        <h3 className="font-semibold mb-2">Booking Summary</h3>
-        <div className="bg-muted rounded p-4 flex flex-col gap-1">
-          <div><b>Service:</b> {booking.service}</div>
-          <div><b>Date:</b> {booking.date}</div>
-          <div><b>Time:</b> {booking.time}</div>
-          <div><b>Vehicle:</b> {booking.vehicle}</div>
-          <div><b>Price:</b> KES {booking.price}</div>
-        </div>
-      </div>
-      <div className="mb-6">
-        <h3 className="font-semibold mb-2">Select Payment Method</h3>
-        <div className="flex gap-4 flex-wrap">
-          {paymentMethods.map((method) => (
-            <Button
-              key={method.key}
-              variant={selected === method.key ? "default" : "outline"}
-              onClick={() => setSelected(method.key)}
-              className="flex items-center gap-2"
-              type="button"
-            >
-              {method.icon}
-              {method.label}
-            </Button>
-          ))}
-        </div>
-      </div>
-      {!paid ? (
-        <form onSubmit={handlePay}>
-          <PaymentForm method={selected} />
-          <div className="mt-8">
-            <Button className="w-full" type="submit">
-              Pay Now
-            </Button>
-          </div>
-        </form>
-      ) : (
-        <div className="mt-8 bg-green-100 border border-green-300 rounded p-4 text-green-800">
-          <h4 className="font-bold mb-2">Payment Successful!</h4>
-          <p>Your booking is confirmed. You can download or print your invoice below.</p>
-          <div className="flex gap-4 mt-4">
-            <Button variant="outline" onClick={() => window.print()}>Print Invoice</Button>
-            <Button variant="outline" onClick={() => {/* TODO: Download PDF */}}>Download PDF</Button>
-          </div>
-        </div>
+      <h2 className="text-2xl font-bold mb-4">Payment Receipts</h2>
+      {error && (
+        <div className="bg-red-100 text-red-700 p-2 rounded mb-4">{error}</div>
       )}
-
-      {/* Payment History */}
-      <div className="mt-12">
-        <h3 className="font-semibold mb-2">Payment History</h3>
+      {loading ? (
+        <div className="flex items-center justify-center py-8">
+          <span className="animate-spin mr-2">🔄</span> Loading payments...
+        </div>
+      ) : payments.length === 0 ? (
+        <div className="py-8 text-gray-600">No payments found.</div>
+      ) : (
         <div className="overflow-x-auto">
           <table className="min-w-full text-sm">
             <thead>
               <tr>
                 <th className="text-left p-2">Date</th>
+                <th className="text-left p-2">Time</th>
                 <th className="text-left p-2">Amount</th>
-                <th className="text-left p-2">Method</th>
-                <th className="text-left p-2">Status</th>
+                <th className="text-left p-2">Customer</th>
+                <th className="text-left p-2">Service Provider</th>
+                <th className="text-left p-2">Booking Summary</th>
                 <th className="text-left p-2">Receipt</th>
               </tr>
             </thead>
             <tbody>
-              {paymentHistory.map((p) => (
-                <tr key={p.id} className="border-b">
-                  <td className="p-2">{p.date}</td>
-                  <td className="p-2">KES {p.amount}</td>
-                  <td className="p-2">{p.method}</td>
-                  <td className="p-2">{p.status}</td>
-                  <td className="p-2">
-                    <Button size="sm" variant="outline" onClick={() => window.print()}>Print</Button>
-                    <Button size="sm" variant="outline" onClick={() => {/* TODO: Download PDF */}}>Download</Button>
-                  </td>
-                </tr>
-              ))}
+              {payments.map((p) => {
+                const booking = bookingSummaries[p.id];
+                return (
+                  <tr key={p.id} className="border-b">
+                    <td className="p-2">{new Date(p.created_at).toLocaleDateString()}</td>
+                    <td className="p-2">{new Date(p.created_at).toLocaleTimeString()}</td>
+                    <td className="p-2">KES {p.amount}</td>
+                    <td className="p-2">{booking?.user?.name || booking?.user?.first_name || '-'}</td>
+                    <td className="p-2">{booking?.service?.provider?.name || booking?.service?.provider?.business_name || '-'}</td>
+                    <td className="p-2">
+                      {booking ? (
+                        <div>
+                          <div><b>Service:</b> {booking.service?.name}</div>
+                          <div><b>Date:</b> {booking.service_date}</div>
+                          <div><b>Time:</b> {booking.service_time}</div>
+                          <div><b>Vehicle:</b> {booking.vehicle_info?.type} {booking.vehicle_info?.make} {booking.vehicle_info?.model}</div>
+                        </div>
+                      ) : '-'}
+                    </td>
+                    <td className="p-2">
+                      <Button size="sm" variant="outline" onClick={() => window.print()}>Print</Button>
+                      <Button size="sm" variant="outline" onClick={() => handleDownloadReceipt(p.id)} disabled={downloadingId === p.id}>
+                        {downloadingId === p.id ? 'Downloading...' : 'Download'}
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
-      </div>
+      )}
+    </div>
+  );
+}
 
-      {/* Basic input styling */}
-      <style>{`
+{/* Payment History section removed due to undefined paymentHistory variable. */}
+
+{/* Basic input styling */ }
+<style>{`
         .input {
           width: 100%;
           padding: 0.5rem;
@@ -166,7 +130,5 @@ export function PaymentPage() {
           border: 1px solid #d1d5db;
           margin-bottom: 0.5rem;
         }
-      `}</style>
-    </div>
-  );
-}
+      `}
+</style>
