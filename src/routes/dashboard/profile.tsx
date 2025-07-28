@@ -1,11 +1,19 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { Camera, Mail, MapPin, Phone, User } from 'lucide-react'
-import type {User as AuthUser} from '@/services/auth.service';
+import type { User as AuthUser } from '@/services/auth.service';
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {  authService } from '@/services/auth.service'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+} from '@/components/ui/alert-dialog'
+import { authService } from '@/services/auth.service'
 
 export const Route = createFileRoute('/dashboard/profile')({
   component: ProfilePage,
@@ -21,26 +29,45 @@ function ProfilePage() {
     phone: '',
     address: '',
   })
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const currentUser = authService.getCurrentUser()
-    setUser(currentUser)
-    if (currentUser) {
-      setFormData({
-        first_name: currentUser.first_name || '',
-        last_name: currentUser.last_name || '',
-        email: currentUser.email || '',
-        phone: '', // Would come from API
-        address: '', // Would come from API
-      })
+    async function fetchProfile() {
+      try {
+        const currentUser = await authService.getCurrentUserProfile();
+        setUser(currentUser);
+        console.log('User Profile:', currentUser);
+        setFormData({
+          first_name: currentUser.first_name || '',
+          last_name: currentUser.last_name || '',
+          email: currentUser.email || '',
+          phone: currentUser.phone || '',
+          address: currentUser.address || '',
+        })
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load profile")
+      }
     }
+    fetchProfile();
+    console.log("Profile page loaded with user:", user)
   }, [])
 
-  const handleSave = () => {
-    // Here you would typically call an API to update the profile
-    console.log('Saving profile:', formData)
-    setIsEditing(false)
-    // Update user state with new data
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Call backend to update profile
+      const updatedUser = await authService.updateProfile(formData);
+      setUser(updatedUser);
+      setIsEditing(false);
+    } catch (err: any) {
+      setError(err.message || 'Failed to update profile');
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleCancel = () => {
@@ -56,6 +83,21 @@ function ProfilePage() {
     setIsEditing(false)
   }
 
+  const handleDelete = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await authService.deleteAccount();
+      await authService.logout();
+      navigate({ to: "/login" });
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Unkown error");
+    } finally {
+      setLoading(false);
+      setOpen(false);
+    }
+  }
+
   if (!user) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -67,6 +109,25 @@ function ProfilePage() {
       </div>
     )
   }
+
+  // Avatar upload handler
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const file = e.target.files[0];
+      const result = await authService.uploadAvatar(file);
+      setUser(prev => prev ? { ...prev, avatar: result.avatar } : prev);
+    } catch (err: any) {
+      setError(err.message || 'Failed to upload avatar');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Verification status
+  const isVerified = !!user?.email_verified_at || user?.isVerified;
 
   return (
     <div className="space-y-6">
@@ -91,8 +152,9 @@ function ProfilePage() {
             <Button
               onClick={handleSave}
               className="bg-blue-600 hover:bg-blue-700"
+              disabled={loading}
             >
-              Save Changes
+              {loading ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>
         )}
@@ -105,13 +167,17 @@ function ProfilePage() {
           <div className="flex items-center space-x-4">
             <div className="relative">
               <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold">
-                {user?.first_name?.[0] || 'U'}
-                {user?.last_name?.[0] || ''}
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="avatar" className="w-20 h-20 rounded-full object-cover" />
+                ) : (
+                  <span>{user?.first_name?.[0] || 'U'}{user?.last_name?.[0] || ''}</span>
+                )}
               </div>
               {isEditing && (
-                <button className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50">
+                <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg hover:bg-gray-50 cursor-pointer">
                   <Camera className="h-4 w-4 text-gray-600" />
-                </button>
+                  <input id="avatar-upload" type="file" accept="image/*" className="hidden" onChange={handleAvatarUpload} />
+                </label>
               )}
             </div>
             <div className="text-white">
@@ -122,9 +188,9 @@ function ProfilePage() {
                 {user.role?.replace('_', ' ') || 'User'}
               </p>
               <div className="flex items-center mt-1">
-                <div className="w-2 h-2 bg-green-400 rounded-full mr-2"></div>
+                <div className={`w-2 h-2 rounded-full mr-2 ${isVerified ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
                 <span className="text-sm text-blue-100">
-                  {user.isVerified ? 'Verified Account' : 'Unverified Account'}
+                  {isVerified ? 'Verified Account' : 'Unverified Account'}
                 </span>
               </div>
             </div>
@@ -231,7 +297,7 @@ function ProfilePage() {
                 <div className="flex items-center space-x-2 py-2">
                   <Phone className="h-4 w-4 text-gray-400" />
                   <span className="text-gray-900">
-                    {formData.phone || 'Not provided'}
+                    {user?.phone || 'Not provided'}
                   </span>
                 </div>
               )}
@@ -258,7 +324,7 @@ function ProfilePage() {
                 <div className="flex items-center space-x-2 py-2">
                   <MapPin className="h-4 w-4 text-gray-400" />
                   <span className="text-gray-900">
-                    {formData.address || 'Not provided'}
+                    {user?.address || 'Not provided'}
                   </span>
                 </div>
               )}
@@ -282,13 +348,13 @@ function ProfilePage() {
           <div>
             <span className="text-gray-600">Member Since:</span>
             <span className="ml-2 font-medium">
-              {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+              {user?.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
             </span>
           </div>
           <div>
             <span className="text-gray-600">Last Updated:</span>
             <span className="ml-2 font-medium">
-              {user?.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A'}
+              {user?.updated_at ? new Date(user.updated_at).toLocaleDateString() : 'N/A'}
             </span>
           </div>
           <div>
@@ -306,14 +372,39 @@ function ProfilePage() {
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Security</h3>
         <div className="space-y-4">
-          <Button variant="outline">Change Password</Button>
-          <Button variant="outline">Two-Factor Authentication</Button>
+          <Button variant="outline" className='cursor-pointer' onClick={() => navigate({ to: "/reset-password" })}>
+            Change Password
+          </Button>
+          <Button variant="outline" className='cursor-pointer'>Two-Factor Authentication</Button>
           <Button
             variant="outline"
-            className="text-red-600 border-red-600 hover:bg-red-50"
-          >
+            className="text-red-600 border-red-600 hover:bg-red-500 hover:text-white cursor-pointer"
+            onClick={() => setOpen(true)}>
             Delete Account
           </Button>
+          <AlertDialog open={open} onOpenChange={setOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <h2 className="text-lg font-semibold">Confirm Account Deletion</h2>
+                <p className="text-sm text-gray-600">
+                  Are you sure you want to delete your account? This action cannot be undone.
+                </p>
+              </AlertDialogHeader>
+              {error && <div className="text-red-500 text-sm mb-2">{error}</div>}
+              <AlertDialogFooter>
+                <AlertDialogAction asChild>
+                  <Button variant="destructive" className='bg-red-600 cursor-pointer' onClick={handleDelete} disabled={loading}>
+                    {loading ? "Deleting..." : "Delete"}
+                  </Button>
+                </AlertDialogAction>
+                <AlertDialogCancel asChild>
+                  <Button variant="outline" className='border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer' onClick={() => setOpen(false)}>
+                    Cancel
+                  </Button>
+                </AlertDialogCancel>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>

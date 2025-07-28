@@ -277,7 +277,9 @@ function RouteComponent() {
 
                     {/* Service Image/Header */}
                     <div className="h-48 w-full bg-gray-200 relative">
-                      {/* Use a placeholder image for now - in production you'd use service.image_url */}
+                      {service.image_url && (
+                        <img src={service.image_url} alt={service.name} className="h-48 w-full object-cover" />
+                      )}
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 flex flex-col justify-end p-4">
                         <div className="inline-block bg-white/90 rounded-lg px-3 py-1 text-sm font-medium text-gray-900 mb-2">
                           {service.service_type === ServiceType.BASIC ? 'Basic Wash' :
@@ -405,7 +407,7 @@ function RouteComponent() {
                       <div>
                         <div className="text-xs text-gray-500">Starting from</div>
                         <div className="text-lg font-semibold text-gray-900">
-                          {formatPrice(parseFloat(service.base_price || '0'), 'USD')}
+                          {formatPrice(parseFloat(String(service.base_price ?? '0')), 'KES')}
                         </div>
                       </div>
 

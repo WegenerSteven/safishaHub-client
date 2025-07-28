@@ -87,17 +87,18 @@ export function ServiceManagement() {
 
   // FIXED: Simplified form submission
   const onSubmit = (data: ServiceFormValues) => {
-    console.log(`Submitting service data:`, data);
-    // Ensure business_id is set
-    const payload = {
-      ...data,
-      business_id: myBusiness?.id,
-    };
-
+    // Prepare FormData for image upload
+    const formData = new FormData();
+    Object.entries({ ...data, business_id: myBusiness?.id }).forEach(([key, value]) => {
+      formData.append(key, value as string);
+    });
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
     if (isEditing && currentServiceId) {
-      updateServiceMutation.mutate(payload);
+      updateServiceMutation.mutate(formData);
     } else {
-      createServiceMutation.mutate(payload);
+      createServiceMutation.mutate(formData);
     }
   };
 
@@ -166,7 +167,12 @@ export function ServiceManagement() {
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       ) : (
-        <ServiceTable services={services ?? []} onEdit={handleEditService} onDelete={handleDeleteService} />
+        <ServiceTable
+          services={services ?? []}
+          onEdit={handleEditService}
+          onDelete={handleDeleteService}
+        // Ensure ServiceTable uses service.image_url for rendering images
+        />
       )}
 
       <ServiceFormDialog
