@@ -5,6 +5,7 @@ export interface User {
     last_name: string;
     role: 'customer' | 'service_provider' | 'admin';
     phone?: string;
+    avatar?: string; // URL or path to the user's avatar image
     is_active: boolean;
     is_verified?: boolean;
     email_verified_at?: string;

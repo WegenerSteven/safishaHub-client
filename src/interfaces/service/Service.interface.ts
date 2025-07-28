@@ -8,7 +8,7 @@ import type { User } from '../auth/User.interface';
   name: string;
   description?: string;
   category_type: CategoryType;
-  service_type: ServiceType;
+  service_type: ServiceType;  
   vehicle_type: VehicleType;
   base_price: number;
   duration_minutes: number;

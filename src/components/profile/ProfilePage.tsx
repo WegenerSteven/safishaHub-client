@@ -7,13 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { User, MapPin, Phone, Mail, Calendar, Settings, Shield, Star } from 'lucide-react';
-import { profileService, ProfileResponse, UserProfile, CustomerProfile, ServiceProviderProfile } from '@/services/profile.service';
+import type { CustomerProfile, ServiceProviderProfile } from '../../interfaces/profile/profile.interface';
+import { profileService } from '../../services/profile.service';
 import { toast } from 'react-hot-toast';
 
 interface ProfileFormData {
