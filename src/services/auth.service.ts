@@ -10,7 +10,7 @@ const isBrowser = typeof window !== 'undefined'
 
 export class AuthService {
 
-   async login(credentials: LoginRequest): Promise<LoginResponse> {
+  async login(credentials: LoginRequest): Promise<LoginResponse> {
     const response = await apiService.login(credentials) // Use the apiService login method    
     if (isBrowser) {
       localStorage.setItem('refresh_token', response.refreshToken)
@@ -40,7 +40,7 @@ export class AuthService {
    * Handle Google OAuth callback
    */
   async handleGoogleCallback(code: string): Promise<AuthResponse> {
-    const response = await apiService.post<{ code: string }, LoginResponse>('/auth/google/callback',{ code },)
+    const response = await apiService.post<{ code: string }, LoginResponse>('/auth/google/callback', { code },)
 
     // Store additional tokens
     if (isBrowser) {
@@ -73,7 +73,7 @@ export class AuthService {
       throw new Error('No refresh token available')
     }
     const response = await apiService.refreshToken()
-    
+
     // Update stored user data if needed
     const currentUser = this.getCurrentUser()
     if (currentUser) {
@@ -83,7 +83,7 @@ export class AuthService {
         refreshToken: refreshToken, // Keep existing refresh token
       }
     }
-    
+
     throw new Error('No current user found')
   }
 
@@ -161,9 +161,35 @@ export class AuthService {
   async getCurrentUserProfile(): Promise<User> {
     return apiService.getCurrentUser()
   }
+
+  /**
+   * Delete current user account
+   */
+  async deleteAccount(): Promise<{ message: string }> {
+    return apiService.delete<{ message: string }>("/auth/delete-account");
+  }
+
+  /**
+   * Update current user profile
+   */
+  async updateProfile(data: Partial<User>): Promise<User> {
+    const response = await apiService.put<Partial<User>, User>("/users/profile", data);
+    return response;
+  }
+
+  /**
+   * Upload avatar for current user
+   */
+  async uploadAvatar(file: File): Promise<{ avatar: string }> {
+    const formData = new FormData();
+    formData.append("avatar", file);
+    return apiService.post<FormData, { avatar: string }>("/users/profile/avatar", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+  }
 }
 
 // Create singleton instance
 export const authService = new AuthService()
 // Export types for convenience
-export type { User}
+export type { User }
