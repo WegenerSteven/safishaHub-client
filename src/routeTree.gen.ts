@@ -9,9 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VerifyEmailRouteImport } from './routes/verify-email'
 import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -28,9 +31,19 @@ import { Route as DashboardBookingsRouteImport } from './routes/dashboard/bookin
 import { Route as DashboardServicesManageRouteImport } from './routes/dashboard/services/manage'
 import { Route as DashboardBusinessRegisterRouteImport } from './routes/dashboard/business/register'
 
+const VerifyEmailRoute = VerifyEmailRouteImport.update({
+  id: '/verify-email',
+  path: '/verify-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -41,6 +54,11 @@ const RegisterRoute = RegisterRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FleetRoute = FleetRouteImport.update({
@@ -128,9 +146,12 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/fleet': typeof FleetRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -147,9 +168,12 @@ export interface FileRoutesByTo {
   '/aichatbot': typeof AichatbotRoute
   '/contact': typeof ContactRoute
   '/fleet': typeof FleetRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -168,9 +192,12 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRouteWithChildren
   '/fleet': typeof FleetRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/services': typeof ServicesRoute
+  '/verify-email': typeof VerifyEmailRoute
   '/dashboard/bookings': typeof DashboardBookingsRoute
   '/dashboard/payments': typeof DashboardPaymentsRoute
   '/dashboard/profile': typeof DashboardProfileRoute
@@ -190,9 +217,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/fleet'
+    | '/forgot-password'
     | '/login'
     | '/register'
+    | '/reset-password'
     | '/services'
+    | '/verify-email'
     | '/dashboard/bookings'
     | '/dashboard/payments'
     | '/dashboard/profile'
@@ -209,9 +239,12 @@ export interface FileRouteTypes {
     | '/aichatbot'
     | '/contact'
     | '/fleet'
+    | '/forgot-password'
     | '/login'
     | '/register'
+    | '/reset-password'
     | '/services'
+    | '/verify-email'
     | '/dashboard/bookings'
     | '/dashboard/payments'
     | '/dashboard/profile'
@@ -229,9 +262,12 @@ export interface FileRouteTypes {
     | '/contact'
     | '/dashboard'
     | '/fleet'
+    | '/forgot-password'
     | '/login'
     | '/register'
+    | '/reset-password'
     | '/services'
+    | '/verify-email'
     | '/dashboard/bookings'
     | '/dashboard/payments'
     | '/dashboard/profile'
@@ -250,19 +286,36 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   DashboardRoute: typeof DashboardRouteWithChildren
   FleetRoute: typeof FleetRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   ServicesRoute: typeof ServicesRoute
+  VerifyEmailRoute: typeof VerifyEmailRoute
   ServiceProviderBookingsRoute: typeof ServiceProviderBookingsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/verify-email': {
+      id: '/verify-email'
+      path: '/verify-email'
+      fullPath: '/verify-email'
+      preLoaderRoute: typeof VerifyEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
       fullPath: '/services'
       preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -277,6 +330,13 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fleet': {
@@ -420,9 +480,12 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   DashboardRoute: DashboardRouteWithChildren,
   FleetRoute: FleetRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   ServicesRoute: ServicesRoute,
+  VerifyEmailRoute: VerifyEmailRoute,
   ServiceProviderBookingsRoute: ServiceProviderBookingsRoute,
 }
 export const routeTree = rootRouteImport
