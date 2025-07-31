@@ -14,7 +14,11 @@ export async function initializePayStackPayment(amount: number, email: string, m
 }
 
 export async function verifyPayStackPayment(reference: string, bookingId: string, amount: number){
+  // Debug: Log outgoing request
+  console.log('[verifyPayStackPayment] Sending:', { reference, bookingId, amount });
   const response = await apiService.post('payments/verify', { reference, bookingId, amount });
+  // Debug: Log response
+  console.log('[verifyPayStackPayment] Response:', response);
   if (response && typeof response === "object" && "data" in response) {
     return (response as { data: any }).data;
   }
