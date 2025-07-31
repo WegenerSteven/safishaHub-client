@@ -414,13 +414,13 @@ function ProviderBookingsPage() {
                 {booking.status === BookingStatus.PENDING && (
                   <div className="flex space-x-2">
                     <Button
-                      className="w-full bg-blue-600"
+                      className="w-half bg-blue-600"
                       onClick={() => openActionDialog('confirm', booking)}
                     >
-                      Confirm
+                      Confirmed
                     </Button>
                     <Button
-                      className="w-full"
+                      className="w-half"
                       variant="destructive"
                       onClick={() => openActionDialog('cancel', booking)}
                     >
