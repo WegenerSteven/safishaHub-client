@@ -116,7 +116,10 @@ const NotificationBell = () => {
         >
           <Bell className='h-5 w-5' />
           {unread.length > 0 && (
-            <span className="absolute -top-1 -right-1 bg-500 text-white rounded-full text-xs px-1 border border-white">
+            <span
+              className="absolute -top-2 -right-2 flex items-center justify-center bg-red-600 text-white rounded-full font-bold text-sm h-6 w-6 border-2 border-white ring-2 ring-red-400 shadow-lg z-10"
+              style={{ minWidth: '1.5rem', minHeight: '1.5rem' }}
+            >
               {unread.length}
             </span>
           )}
