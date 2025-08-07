@@ -11,7 +11,7 @@ class ApiService {
 
     constructor() {
         // This baseURL already includes the /api prefix
-        this.baseURL = import.meta.env.VITE_BASE_API_URL || 'http://localhost:3001/api';
+        this.baseURL = import.meta.env.VITE_BASE_API_URL || '';
 
         this.api = axios.create({
             baseURL: this.baseURL,

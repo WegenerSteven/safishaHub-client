@@ -54,11 +54,12 @@ export class NotificationsService {
   }
 
   async getNotifications(){
-    return apiService.get('/notifications');
+    return await apiService.get('/notifications');
+
   }
 
   async markAsRead(id: string) {
-    return apiService.patch(`/notifications/${id}`, { status: 'read' });
+    return await apiService.patch(`/notifications/${id}`, { status: 'read' });
   }
 
   /**

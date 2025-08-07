@@ -36,7 +36,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [service, setService] = useState<any>(null);
   const [serviceLoading, setServiceLoading] = useState(true);
 
-  const [booking, setBooking] = useState<any>(null);
+  // Removed unused booking state
 
   // Form fields
   const [date, setDate] = useState('');
@@ -48,8 +48,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
   const [vehicleYear, setVehicleYear] = useState<number | undefined>(undefined);
   const [vehiclePlate, setVehiclePlate] = useState('');
 
-  const [paymentVerified, setPaymentVerified] = useState(false);
-  const [paying, setPaying] = useState(false);
+  // Removed unused paymentVerified state
   const [paymentError, setPaymentError] = useState<string | null>(null);
   const [verifyingPayment, setVerifyingPayment] = useState(false);
 
@@ -96,11 +95,48 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
       };
       // Send booking request to API
       const result = await bookingsService.createBooking(bookingData);
-      setBooking(result);
       // Log booking id for debugging
       console.log('[BookingForm] Created booking id:', result.id);
+      try {
+        const providerId = service.business_id || service.provider?.id;
+        if (providerId) {
+          //send in-app notification
+          await notificationsService.sendBookingNotification(
+            providerId, result.id, `${user.first_name || user.name || 'Customer'}`, service.name, date
+          );
+
+          //send email notification if provider has email
+          if(service.provider?.email){
+            await notificationsService.sendEmailNotification(
+              service.provider.email,
+              'New Booking Notification',
+              `You have a new booking for ${service.name} on ${date} at ${time}.`,
+              {
+                service_name: service.name,
+                customer_name: `${user.first_name || user.name || 'Customer'}`,
+                booking_date: date,
+                booking_time: time
+              }
+            );
+          };
+
+          //send sms notification if provider has phone
+          if(service.provider?.phone || service.provider?.business_phone){
+            const phone = service.provider?.phone || service.provider?.business_phone;
+
+            await notificationsService.sendSmsNotification(
+              phone,
+              `New booking: ${service.name} on ${date} at ${time} by ${user.first_name || user.name || 'Customer'}.`
+            );
+          }
+        }
+      } catch (notificationError) {
+        console.error ('Failed to send notifications:', notificationError)
+      }
+
+
+
       // Payment step
-      setPaying(true);
       setPaymentError(null);
       const paymentInit = await initializePayStackPayment(
         parseFloat(service.base_price || '0'),
@@ -112,6 +148,8 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
       setVerifyingPayment(true);
       let pollCount = 0;
       const maxPolls = 30;
+
+      // Poll for payment verification
       const pollInterval = setInterval(async () => {
         pollCount++;
         try {
@@ -122,10 +160,10 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
             parseFloat(service.base_price || '0')
           );
           if (verifyResult.status === 'success') {
-            setPaymentVerified(true);
             setVerifyingPayment(false);
             toast.success('Payment verified! Booking confirmed.');
             clearInterval(pollInterval);
+
             if (paystackWindow) paystackWindow.close();
             setSuccess('Booking and payment successful! Redirecting to your bookings...');
             if (onSuccess) {
@@ -137,8 +175,13 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
             }
           }
         } catch (err) {
-          // Ignore errors during polling
+          console.error('Payment verification polling error:', err);
+          if (pollCount >= maxPolls - 1) {
+            setError('Payment verification failed. Please check your payment status in your dashboard.');
+            toast.error('Payment verification issue. Please check your payment status in your bookings');
+          }
         }
+
         if (pollCount >= maxPolls) {
           setVerifyingPayment(false);
           clearInterval(pollInterval);
@@ -151,10 +194,8 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
       toast.error(err.message || 'Failed to create booking or initialize payment.');
     } finally {
       setLoading(false);
-      setPaying(false);
     }
   };
-
 
   // Load service details
   useEffect(() => {
@@ -184,126 +225,6 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
 
   // Set minimum date to today
   const today = new Date().toISOString().split('T')[0];
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isAuthenticated || !user) {
-      setError('Please log in to book a service.');
-      toast.error('You need to be logged in to book a service. Please log in and try again.');
-      // Redirect to login page
-      navigate({ to: '/login' });
-      return;
-    }
-
-    if (!service) {
-      setError('Service details are not available.');
-      return;
-    }
-
-    // Form validation
-    if (!date) {
-      setError('Please select a service date.');
-      return;
-    }
-
-    if (!time) {
-      setError('Please select a service time.');
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      console.log('Current user:', user);
-
-      // Prepare booking data
-      const bookingData: CreateBookingRequest = {
-        user_id: user.id, // Make sure user.id exists
-        service_id: serviceId,
-        service_date: date,
-        service_time: time,
-        total_amount: parseFloat(service.base_price || '0'),
-        special_instructions: specialInstructions || undefined,
-        vehicle_info: {
-          type: vehicleType,
-          make: vehicleMake || undefined,
-          model: vehicleModel || undefined,
-          year: vehicleYear || undefined,
-          license_plate: vehiclePlate || undefined,
-        }
-      };
-
-      // Send booking request to API
-      const result = await bookingsService.createBooking(bookingData);
-      setBooking(result);
-      console.log('Booking created:', result);
-      // Send notifications to service provider
-      try {
-        // Get provider ID from service data
-        const providerId = service.business_id || service.provider?.id;
-
-        if (providerId) {
-          // Send in-app notification
-          await notificationsService.sendBookingNotification(
-            providerId,
-            result.id,
-            `${user.first_name || user.name || 'Customer'}`,
-            service.name,
-            date
-          );
-
-          // Send email notification if provider has email
-          if (service.provider?.email) {
-            await notificationsService.sendEmailNotification(
-              service.provider.email,
-              'New Booking Notification',
-              `You have a new booking for ${service.name} on ${date} at ${time}.`,
-              {
-                service_name: service.name,
-                customer_name: `${user.first_name || user.name || 'Customer'}`,
-                booking_date: date,
-                booking_time: time
-              }
-            );
-          }
-
-          // Send SMS notification if provider has phone
-          if (service.provider?.phone || service.provider?.business_phone) {
-            const phone = service.provider?.phone || service.provider?.business_phone;
-            await notificationsService.sendSmsNotification(
-              phone,
-              `New booking: ${service.name} on ${date} at ${time} by ${user.first_name || user.name || 'Customer'}.`
-            );
-          }
-        }
-      } catch (notificationError) {
-        // Log but don't fail the booking process
-        console.error('Failed to send notifications:', notificationError);
-      }
-
-      // Handle success
-      setSuccess('Booking created successfully! Redirecting to your bookings...');
-      toast.success('Booking created successfully! Redirecting to your bookings...');
-
-      // Call success callback if provided
-      if (onSuccess) {
-        onSuccess(result.id);
-      } else {
-        // Redirect to bookings page after 2 seconds
-        setTimeout(() => {
-          navigate({ to: '/dashboard/bookings' });
-        }, 2000);
-      }
-    } catch (err: any) {
-      console.error('Failed to create booking:', err);
-      setError(err.message || 'Failed to create booking. Please try again.');
-      toast.error(err.message || 'Failed to create booking. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (serviceLoading) {
     return (
@@ -552,3 +473,7 @@ export function BookingForm({ serviceId, onClose, onSuccess }: BookingFormProps)
     </div>
   );
 }
+// function setPaymentVerified(arg0: boolean) {
+//   throw new Error('Function not implemented.');
+// }
+
